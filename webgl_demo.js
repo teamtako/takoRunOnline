@@ -36,6 +36,10 @@ var speed = 0.1;
 var destZ = 0;
 var destY = 0;
 
+var cX=-5;
+var cY=2;
+var cZ=0;
+
 const KEY_0 = 48;
 const KEY_1 = 49;
 const KEY_2 = 50;
@@ -193,17 +197,22 @@ function updateFrame() {
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.clear(gl.DEPTH_BUFFER_BIT);
     if (playerMesh.position.z > destZ) {  //playerMesh is missile mesh
-        playerMesh.position.z -= mvmtSpeed;
+        cZ -= mvmtSpeed;
     } else if (playerMesh.position.z < destZ) {
         playerMesh.position.z += mvmtSpeed;
+        cZ += mvmtSpeed;
+
     }
     if (playerMesh.position.y > destY) {
         playerMesh.position.y -= mvmtSpeed;
+        cY-= mvmtSpeed;
+
     } else if (playerMesh.position.y < destY) {
         playerMesh.position.y += mvmtSpeed;
+        cY += mvmtSpeed;
     }
 
-
+    camera.position = new Vector3(cX, cY, cZ);
     // verticalVelocity -= gravity * deltaTime;
     // playerMesh.position.y += verticalVelocity;
     // if(playerMesh.position.y < 0){
