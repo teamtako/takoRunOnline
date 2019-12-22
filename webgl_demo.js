@@ -36,6 +36,8 @@ var speed = 0.1;
 var destZ = 0;
 var destY = 0;
 
+var paused= false;
+
 var cX=-5;
 var cY=2;
 var cZ=0;
@@ -194,6 +196,25 @@ function checkIntersection(m1, m2) {
 }
 
 function updateFrame() {
+    if(paused){
+        
+        textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
+
+        textCtx.font = "100px Arial";
+        textCtx.fillStyle = "white";
+        textCtx.fillText("Paused", textCanvas.width/2, textCanvas.height/2);
+
+        textCtx.font = "50px Arial";
+        textCtx.fillText("resume", textCanvas.width/2, textCanvas.height/2+50);
+        textCtx.fillText("Donate", textCanvas.width/2, textCanvas.height/2+100);
+        textCtx.fillText("Siko Mode", textCanvas.width/2, textCanvas.height/2+150);
+
+        document.getElementByTagName("*").cursor = "auto";
+        
+    }else if(isDead){
+
+    }
+    else{
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.clear(gl.DEPTH_BUFFER_BIT);
     if (playerMesh.position.z > destZ) {  //playerMesh is missile mesh
@@ -266,6 +287,7 @@ function updateFrame() {
         difficulty = 1;
     } else {
         if (isDead) {
+            
             textCtx.font = "100px Arial";
             textCtx.fillText("You're Dead! Press S to restart", 170, 200);
             clearInterval(stopvar);
@@ -282,7 +304,7 @@ function updateFrame() {
     endTime = new Date().getTime();
     deltaTime = (endTime - startTime) / 1000.0;
     startTime = endTime;
-
+    }
 }
 function keyUp(event) {
     console.log(camera.position);
@@ -330,6 +352,16 @@ function keyDown(event) {
             mainMenu = !mainMenu;
             isDead = false;
             fishyMesh.position.x = 20;
+            break;
+
+        case KEY_P:
+            console.log("paused")
+            paused=!paused;
+            if(paused){
+
+            }else{
+                document.getElementById("p2").style.color = "blue";
+            }
             break;
     }
 }
