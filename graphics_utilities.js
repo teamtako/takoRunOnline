@@ -364,10 +364,11 @@ class Matrix4 {
 
     static buildModelMatrix4(position, scale, orientation){
         let m = orientation.toMatrix4();
-        m.translate(position);
-        m.scale(scale);
+        let m2 = new Matrix4(1);
+        m2.translate(position);
+        m2.scale(scale);
         
-        return m;
+        return Matrix4.multiply(m2,m);
     }
 
     static fromArray(arr){

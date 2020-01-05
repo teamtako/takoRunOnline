@@ -152,7 +152,7 @@ window.onload = function () {
     loadSkyboxFaceImage(skyboxImageData[5], 256, 256, "-y");
 
     fishyMesh = createTexturedMesh(vertices, indices);
-    //fishyMesh.textureID = generateGLTexture2D(monkeyPixels, 1024, 1024);
+    // fishyMesh.textureID = generateGLTexture2D(monkeyPixels, 1024, 1024);
     fishyMesh.orientation.rotate(new Vector3(0, 1, 0), -Math.PI);
     fishyMesh.position.y = 2;
     let verts = [];
@@ -160,7 +160,8 @@ window.onload = function () {
     generateUnitCubeVerticesIndexedWithNormalsTexCoords(verts, inds);
     //this.playerMesh = createTexturedMesh(verts, inds);
     playerMesh = createTexturedMesh(missileData[0], missileData[1]);
-    fishyMesh = createTexturedMesh(asteroidData[0],asteroidData[1])
+    fishyMesh = createTexturedMesh(asteroidData[0],asteroidData[1]);
+    fishyMesh.position.x += 6
     playerMesh.orientation.rotate(new Vector3(0, 1, 0), -Math.PI);
     meshes = [fishyMesh, playerMesh];
 
@@ -215,6 +216,8 @@ function updateFrame() {
     playerMesh.position.y = ((mouseY / canvas.height) * -8) + 6;
 
     if (fishyMesh.position.x <= -7) {
+        console.log("Test");
+        fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
         fishyMesh.position.x = 80 / (difficulty);
         fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
         fishyMesh.position.z = (Math.random() - .5) * 8;
