@@ -89,9 +89,9 @@ const KEY_SPACE = 32;
 window.onload = function () {
     window.addEventListener("keyup", keyUp);
     window.addEventListener("keydown", keyDown);
-    window.addEventListener("mousemove", mouseMove);
-    window.addEventListener("mousedown", mouseDown);
-    window.addEventListener("mouseup", mouseUp);
+     window.addEventListener("mousemove", mouseMove);
+     window.addEventListener("mousedown", mouseDown);
+     window.addEventListener("mouseup", mouseUp);
 
     txtArr = text.split(" ");
     
@@ -225,32 +225,27 @@ function updateFrame() {
     else{
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.clear(gl.DEPTH_BUFFER_BIT);
-    // if (playerMesh.position.z > destZ) {  //playerMesh is missile mesh
-    //     cZ -= mvmtSpeed;
-    // } else if (playerMesh.position.z < destZ) {
-    //     playerMesh.position.z += mvmtSpeed;
-    //     cZ += mvmtSpeed;
+    if (playerMesh.position.z > destZ) {  //playerMesh is missile mesh
+        cZ -= mvmtSpeed;
+    } else if (playerMesh.position.z < destZ) {
+        playerMesh.position.z += mvmtSpeed;
+        cZ += mvmtSpeed;
 
-    // }
-    // if (playerMesh.position.y > destY) {
-    //     playerMesh.position.y -= mvmtSpeed;
-    //     cY-= mvmtSpeed;
+    }
+    if (playerMesh.position.y > destY) {
+        playerMesh.position.y -= mvmtSpeed;
+        cY-= mvmtSpeed;
 
-    // } else if (playerMesh.position.y < destY) {
-    //     playerMesh.position.y += mvmtSpeed;
-    //     cY += mvmtSpeed;
-    // }
+    } else if (playerMesh.position.y < destY) {
+        playerMesh.position.y += mvmtSpeed;
+        cY += mvmtSpeed;
+    }
 
-    // camera.position = new Vector3(cX, cY, cZ);
-    // // verticalVelocity -= gravity * deltaTime;
-    // // playerMesh.position.y += verticalVelocity;
-    // // if(playerMesh.position.y < 0){
-    // //     playerMesh.position.y = 0;
-    // //     jumping = false;
-    // // }
+    camera.position = new Vector3(cX, cY, cZ);
 
-    // playerMesh.position.z = ((mouseX / canvas.width) * 8) - 4;
-    // playerMesh.position.y = ((mouseY / canvas.height) * -8) + 6;
+
+    playerMesh.position.z = ((mouseX / canvas.width) * 8) - 4;
+    playerMesh.position.y = ((mouseY / canvas.height) * -8) + 6;
 
     if (fishyMesh.position.x <= -7) {
         fishyMesh.position.x = 80 / (difficulty);
@@ -337,12 +332,12 @@ function keyUp(event) {
     }
 }
 
-// function mouseMove(evt) {
-//     mouseX = evt.x;
-//     mouseY = evt.y;
-//     destZ = (((mouseX / canvas.width) * 8) - 4);
-//     destY = (((mouseY / canvas.height) * -8) + 6);
-// }
+function mouseMove(evt) {
+    mouseX = evt.x;
+    mouseY = evt.y;
+    destZ = (((mouseX / canvas.width) * 8) - 4);
+    destY = (((mouseY / canvas.height) * -8) + 6);
+}
 function mouseDown(evt) {
     speed = 0.2;
 
