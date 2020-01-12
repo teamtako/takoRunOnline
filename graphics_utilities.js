@@ -648,7 +648,7 @@ function getSurfaceNormal(v1, v2, v3){
     return vc;
 }
 
-function generateUnitCubeVerticesIndexedWithNormals(verts, inds){
+function generateUnitCubeVerticesIndexedWithNormals(verts, inds){ //generates unit cube vertices indexed with normals
     verts.push(-0.5); verts.push(-0.5); verts.push(-0.5);
     verts.push(0); verts.push(0); verts.push(-1);
     verts.push(-0.5); verts.push(0.5); verts.push(-0.5);
@@ -711,7 +711,7 @@ function generateUnitCubeVerticesIndexedWithNormals(verts, inds){
     inds.push(20); inds.push(21); inds.push(22); inds.push(22); inds.push(23); inds.push(20);
 }
 
-function generateUnitCubeVerticesIndexedWithNormalsTexCoords(verts, inds){
+function generateUnitCubeVerticesIndexedWithNormalsTexCoords(verts, inds){ // generates unit cube vertices with normals, indices, and texture coordinates 
     verts.push(-0.5); verts.push(-0.5); verts.push(-0.5);
     verts.push(0); verts.push(0); verts.push(-1);
     verts.push(0); verts.push(1);
@@ -798,7 +798,7 @@ function generateUnitCubeVerticesIndexedWithNormalsTexCoords(verts, inds){
     inds.push(20); inds.push(21); inds.push(22); inds.push(22); inds.push(23); inds.push(20);
 }
 
-function generateIcoSphereVerticesIndexedWithNormals(verts, inds, divisions = 0){
+function generateIcoSphereVerticesIndexedWithNormals(verts, inds, divisions = 0){ // generates icosphere vertices with indices and normals
     if(divisions > 5){
         divisions = 5;
     }
@@ -882,7 +882,7 @@ function generateIcoSphereVerticesIndexedWithNormals(verts, inds, divisions = 0)
     addTri(verts, inds, 9, 8, 6, divisions);
 }
 
-function generateIcoSphereVerticesIndexedWithNormalsTexCoords(verts, inds, divisions = 0){
+function generateIcoSphereVerticesIndexedWithNormalsTexCoords(verts, inds, divisions = 0){ // generates icosphere vercies with indices, normals, and texture coordinates
     if(divisions > 5){
         divisions = 5;
     }
@@ -967,7 +967,7 @@ function generateIcoSphereVerticesIndexedWithNormalsTexCoords(verts, inds, divis
     addTri(verts, inds, 9, 8, 6, divisions);
 }
 
-function generateUnitCylinderIndexedWithNormalsTexCoords(verts, inds, divisions = 16){
+function generateUnitCylinderIndexedWithNormalsTexCoords(verts, inds, divisions = 16){ // generates unit cylinder with indicies and texture coordinates
     if(divisions < 3) divisions = 3;
     function addVertex(v, n, t){
         if(typeof addVertex.counter == 'undefined'){
@@ -1063,7 +1063,7 @@ function generateUnitCylinderIndexedWithNormalsTexCoords(verts, inds, divisions 
     }
 }
 
-function generateUnitPlaneIndexedWithNormalsTexCoords(verts, inds){
+function generateUnitPlaneIndexedWithNormalsTexCoords(verts, inds){ // generates unit plane with indicies, normals, and texture coordinates
     verts.push(-0.5); verts.push(0); verts.push(-0.5);
     verts.push(0.0); verts.push(1.0); verts.push(0.0);
     verts.push(0); verts.push(1);

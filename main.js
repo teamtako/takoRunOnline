@@ -6,10 +6,16 @@ var gl;
 var light;
 var camera;
 
-var fishyMesh;
 var playerMesh;
 var meshes = [];
+var asteroids = [];
 
+var asteroid1;
+var asteroid2;
+var asteroid3;
+var asteroid4;
+var asteroid5;
+var asteroid6;
 
 var stopvar;
 var verticalVelocity = 0;
@@ -151,24 +157,34 @@ window.onload = function () {
     loadSkyboxFaceImage(skyboxImageData[4], 256, 256, "+y");
     loadSkyboxFaceImage(skyboxImageData[5], 256, 256, "-y");
 
-    fishyMesh = createTexturedMesh(vertices, indices);
-    // fishyMesh.textureID = generateGLTexture2D(monkeyPixels, 1024, 1024);
-    fishyMesh.orientation.rotate(new Vector3(0, 1, 0), -Math.PI);
-    fishyMesh.position.y = 2;
-    let verts = [];
-    let inds = [];
-    generateUnitCubeVerticesIndexedWithNormalsTexCoords(verts, inds);
+    asteroid1 =  createTexturedMesh(asteroidData[0],asteroidData[1]);
+    asteroid2 =  createTexturedMesh(asteroidData[0],asteroidData[1]);
+    asteroid3 =  createTexturedMesh(asteroidData[0],asteroidData[1]);
+    asteroid4 =  createTexturedMesh(asteroidData[0],asteroidData[1]);
+    asteroid5 =  createTexturedMesh(asteroidData[0],asteroidData[1]);
+    asteroid6 =  createTexturedMesh(asteroidData[0],asteroidData[1]);
+    
+    asteroids = [asteroid1, asteroid2, asteroid3];
+
+    for(i = 0; i < asteroids.length; i++){
+        var fishyMesh = asteroids[i];
+        // fishyMesh.textureID = generateGLTexture2D(monkeyPixels, 1024, 1024);
+        fishyMesh.orientation.rotate(new Vector3(0, 1, 0), -Math.PI);
+        fishyMesh.position.y = 2;
+        fishyMesh.position.x -= (.1);
+    }   
+    
+    // let verts = [];
+    // let inds = [];
+    // generateUnitCubeVerticesIndexedWithNormalsTexCoords(verts, inds); // generates unit cube vertices that is indexed with normal texture coordinates
     //this.playerMesh = createTexturedMesh(verts, inds);
     playerMesh = createTexturedMesh(missileData[0], missileData[1]);
-    fishyMesh = createTexturedMesh(asteroidData[0],asteroidData[1]);
-    fishyMesh.position.x += 6
     playerMesh.orientation.rotate(new Vector3(0, 1, 0), -Math.PI);
-    meshes = [fishyMesh, playerMesh];
+    meshes = [playerMesh];
 
     startTime = new Date().getTime();
 
 
-    fishyMesh.position.x -= (.1);
     difficulty = 1;
     setInterval(updateFrame, 1);
     stopvar = setInterval(updateFrame, 1);
@@ -212,9 +228,13 @@ function updateFrame() {
     //     jumping = false;
     // }
 
+
+
     playerMesh.position.z = ((mouseX / canvas.width) * 8) - 4;
     playerMesh.position.y = ((mouseY / canvas.height) * -8) + 6;
 
+    for(i = 0; i < asteroids.length; i++){
+    var fishyMesh = asteroids[i];
     if (fishyMesh.position.x <= -7) {
         console.log("Test");
         fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
@@ -246,9 +266,11 @@ function updateFrame() {
         fishyMesh.position.x -= speed;
     }
     fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
+    }
 
     camera.updateView(deltaTime);
     renderTexturedMeshes(meshes, camera, new Vector3(4, 4, 4));
+    renderTexturedMeshes(asteroids, camera, new Vector3(4, 4, 4));
     renderSkybox(camera.projectionMatrix, camera.orientation);
 
     textCtx.font = "30px Arial";
@@ -288,7 +310,9 @@ function keyUp(event) {
             if (isDead == true) {
                 gl.clearColor(0.5, 0.7, 1.0, 1.0);
                 playerMesh.position.z = ((mouseX / canvas.width) * 2) + -1;
-                fishyMesh.position.x = 22;
+                for(i = 0; i < asteroids.length; i++){
+                    asteroids[i].position.x = 22;
+                }
                 playerMesh.position.y = ((mouseY / canvas.height) * -2) + 3;
                 score = 0;
                 startTime = new Date().getTime();
@@ -308,8 +332,9 @@ function mouseMove(evt) {
     destY = (((mouseY / canvas.height) * -8) + 6);
 }
 function mouseDown(evt) {
-    speed = 0.2;
-
+    if(!mainMenu){
+        speed = 0.2;
+    }
     console.log("down");
 }
 function mouseUp(evt) {
@@ -323,7 +348,9 @@ function keyDown(event) {
         case KEY_SPACE:
             mainMenu = !mainMenu;
             isDead = false;
-            fishyMesh.position.x = 20;
+            for(i = 0; i < asteroids.length; i++){
+                asteroids[i].position.x = 20;
+            }
             break;
     }
 }
