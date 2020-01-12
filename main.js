@@ -9,6 +9,7 @@ var camera;
 var playerMesh;
 var meshes = [];
 var asteroids = [];
+var speeds = [];
 
 var asteroid1;
 var asteroid2;
@@ -157,14 +158,16 @@ window.onload = function () {
     loadSkyboxFaceImage(skyboxImageData[4], 256, 256, "+y");
     loadSkyboxFaceImage(skyboxImageData[5], 256, 256, "-y");
 
-    asteroid1 =  createTexturedMesh(asteroidData[0],asteroidData[1]);
-    asteroid2 =  createTexturedMesh(asteroidData[0],asteroidData[1]);
-    asteroid3 =  createTexturedMesh(asteroidData[0],asteroidData[1]);
-    asteroid4 =  createTexturedMesh(asteroidData[0],asteroidData[1]);
-    asteroid5 =  createTexturedMesh(asteroidData[0],asteroidData[1]);
-    asteroid6 =  createTexturedMesh(asteroidData[0],asteroidData[1]);
+    asteroid1 =  createTexturedMesh(straw[0],straw[1]);
+    asteroid2 =  createTexturedMesh(straw[0],straw[1]);
+    asteroid3 =  createTexturedMesh(straw[0],straw[1]);
+    asteroid4 =  createTexturedMesh(straw[0],straw[1]);
+    asteroid5 =  createTexturedMesh(straw[0],straw[1]);
+    asteroid6 =  createTexturedMesh(straw[0],straw[1]);
     
     asteroids = [asteroid1, asteroid2, asteroid3];
+
+    speeds = [Math.random()*0.1,Math.random()*0.1,Math.random()*0.1];
 
     for(i = 0; i < asteroids.length; i++){
         var fishyMesh = asteroids[i];
@@ -237,11 +240,12 @@ function updateFrame() {
     var fishyMesh = asteroids[i];
     if (fishyMesh.position.x <= -7) {
         console.log("Test");
+        speeds[i] = Math.random()*0.1;
         fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
         fishyMesh.position.x = 80 / (difficulty);
         fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
-        fishyMesh.position.z = (Math.random() - .5) * 8;
-        fishyMesh.position.y = Math.random() * 3;
+        fishyMesh.position.z = (Math.random() - .5) * 16;
+        fishyMesh.position.y = (Math.random() * 16)-10;
         console.log("" + fishyMesh.position.y);
     } else {
         fishyMesh.position.x -= (.1 * difficulty);
@@ -263,7 +267,7 @@ function updateFrame() {
     if (fishyMesh.position.x <= -7) { //fishyMesh is asteroid mesh 
         fishyMesh.position.x = 20;
     } else {
-        fishyMesh.position.x -= speed;
+        fishyMesh.position.x -= speeds[i];
     }
     fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
     }
