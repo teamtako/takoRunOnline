@@ -1,3 +1,4 @@
+
 import bpy
 from os import system, name
 
@@ -28,10 +29,11 @@ class JSTextureExporter(bpy.types.Operator):
 
     imgName: bpy.props.StringProperty(name="Image Name")
     varName: bpy.props.StringProperty(name="Javascript Variable Name")
-    outFile: bpy.props.StringProperty(name="Output File", subtype="FILE_PATH")
+    outFile: bpy.props.StringProperty(name="Output File Name")
+    outFileLoc: bpy.props.StringProperty(name="Output File Location", subtype="FILE_PATH")
 
     def execute(self, context): #CODE TO RUN WHEN EXECUTED
-        if self.varName is '' or self.outFile is '' or self.imgName is '':
+        if self.varName is '' or self.outFile is '' or self.imgName is '' or self.outFileLoc is '':
             return {'FINISHED'}
         
         texturePixels = []
@@ -41,7 +43,7 @@ class JSTextureExporter(bpy.types.Operator):
 
         textureData = "var " + self.varName + " = " + str(texturePixels) + ";";    
             
-        file = open(self.outFile + '.js', 'w')
+        file = open(self.outFileLoc + self.outFile + '.js', 'w')
         file.write(textureData);
         file.close()
         
@@ -60,8 +62,3 @@ def unregister():
     
 if __name__ == "__main__":
     register()
-    
-    
-    
-    
-

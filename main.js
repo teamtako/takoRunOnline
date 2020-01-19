@@ -106,7 +106,7 @@ window.onload = function () {
     canvas.width = window.innerWidth * 0.95;
     canvas.height = window.innerHeight * 0.95;
     gl.viewport(0, 0, canvas.width, canvas.height);
-    //gl.enable(gl.CULL_FACE);
+    gl.enable(gl.CULL_FACE);
     gl.clearColor(0.5, 0.7, 1.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
 
@@ -158,20 +158,24 @@ window.onload = function () {
     loadSkyboxFaceImage(skyboxImageData[4], 256, 256, "+y");
     loadSkyboxFaceImage(skyboxImageData[5], 256, 256, "-y");
 
-    asteroid1 =  createTexturedMesh(straw[0],straw[1]);
-    asteroid2 =  createTexturedMesh(straw[0],straw[1]);
-    asteroid3 =  createTexturedMesh(straw[0],straw[1]);
-    asteroid4 =  createTexturedMesh(straw[0],straw[1]);
-    asteroid5 =  createTexturedMesh(straw[0],straw[1]);
-    asteroid6 =  createTexturedMesh(straw[0],straw[1]);
-    
-    asteroids = [asteroid1, asteroid2, asteroid3];
+    asteroid1 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid2 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid3 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid4 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid5 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid6 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid7 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid8 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid9 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
 
-    speeds = [Math.random()*0.1,Math.random()*0.1,Math.random()*0.1];
+    asteroids = [asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6];
+
+    speeds = [Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1];
 
     for(i = 0; i < asteroids.length; i++){
         var fishyMesh = asteroids[i];
         // fishyMesh.textureID = generateGLTexture2D(monkeyPixels, 1024, 1024);
+        fishyMesh.scale = new Vector3(0.7,0.7,0.7);
         fishyMesh.orientation.rotate(new Vector3(0, 1, 0), -Math.PI);
         fishyMesh.position.y = 2;
         fishyMesh.position.x -= (.1);
@@ -239,10 +243,9 @@ function updateFrame() {
     for(i = 0; i < asteroids.length; i++){
     var fishyMesh = asteroids[i];
     if (fishyMesh.position.x <= -7) {
-        console.log("Test");
         speeds[i] = Math.random()*0.1;
-        fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
-        fishyMesh.position.x = 80 / (difficulty);
+        // fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
+        fishyMesh.position.x = 320 / (difficulty);
         fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
         fishyMesh.position.z = (Math.random() - .5) * 16;
         fishyMesh.position.y = (Math.random() * 16)-10;
@@ -265,7 +268,7 @@ function updateFrame() {
     }
 
     if (fishyMesh.position.x <= -7) { //fishyMesh is asteroid mesh 
-        fishyMesh.position.x = 20;
+        fishyMesh.position.x = 320;
     } else {
         fishyMesh.position.x -= speeds[i];
     }

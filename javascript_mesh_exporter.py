@@ -1,8 +1,6 @@
 import bpy
 from os import system, name
 
-
-
 bl_info = {
     "name": "JS Mesh Export", 
     "blender": (2, 80, 0),
@@ -29,10 +27,11 @@ class JSMeshExporter(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     varName: bpy.props.StringProperty(name="Javascript Variable Name")
-    outFile: bpy.props.StringProperty(name="Output File", subtype="FILE_PATH")
+    outFileLoc: bpy.props.StringProperty(name="Output File Location", subtype="FILE_PATH")
+    outFile: bpy.props.StringProperty(name="Output File Name")
 
     def execute(self, context): #CODE TO RUN WHEN EXECUTED
-        if self.varName is '' or self.outFile is '':
+        if self.varName is '' or self.outFile is '' or self.outFileLoc is '':
             return {'FINISHED'}
         
         vertexList = []
@@ -82,7 +81,7 @@ class JSMeshExporter(bpy.types.Operator):
         fileText += str(nvList) + ","
         fileText += str(indexList) + "];\n"
                     
-        file = open(self.outFile + '.js', 'w')
+        file = open(self.outFileLoc + self.outFile + '.js', 'w')
         file.write(fileText);
         file.close()
         return {'FINISHED'}
@@ -100,8 +99,3 @@ def unregister():
     
 if __name__ == "__main__":
     register()
-    
-    
-    
-    
-
