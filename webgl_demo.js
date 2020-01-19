@@ -158,12 +158,12 @@ window.onload = function () {
     initTexturedMeshRenderer();
     initSkyboxRenderer();
 
-    loadSkyboxFaceImage(skyboxImageData[0], 256, 256, "-x");
-    loadSkyboxFaceImage(skyboxImageData[1], 256, 256, "-z");
-    loadSkyboxFaceImage(skyboxImageData[2], 256, 256, "+x");
-    loadSkyboxFaceImage(skyboxImageData[3], 256, 256, "+z");
-    loadSkyboxFaceImage(skyboxImageData[4], 256, 256, "+y");
-    loadSkyboxFaceImage(skyboxImageData[5], 256, 256, "-y");
+    loadSkyboxFaceImage(SeaSkybox[0], 256, 256, "+x");
+    loadSkyboxFaceImage(SeaSkybox[1], 256, 256, "-z");
+    loadSkyboxFaceImage(SeaSkybox[2], 256, 256, "-x");
+    loadSkyboxFaceImage(SeaSkybox[3], 256, 256, "+z");
+    loadSkyboxFaceImage(SeaSkybox[4], 256, 256, "-y");
+    loadSkyboxFaceImage(SeaSkybox[5], 256, 256, "+y");
 
     fishyMesh = createTexturedMesh(vertices, indices);
     //fishyMesh.textureID = generateGLTexture2D(monkeyPixels, 1024, 1024);
