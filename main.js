@@ -1,3 +1,10 @@
+var lvl1 = "Beluga whale populations are exposed to a variety of stressors and threats, including pollution  heavy metals, chemicals, trash shipping energy exploration, commercial fishing, extreme weather events, strandings, subsistence harvesting, and other types of human disturbance such as underwater noise. The Cook Inlet population faces additional threats because of its proximity to the most densely populated area of Alaska (Anchorage) during the summer season.";
+var activeWords = []; //all words(objects with words accosited to them) that are on the screen at any given time
+var activeWord=""; //The word that you are currently typing
+var wordDone=true; //if the current word is typed and a new one needs to be chosen
+var words=[];
+var wordAt=0;
+
 var canvas;
 var textCanvas;
 var textCtx;
@@ -88,6 +95,7 @@ window.onload = function () {
     window.addEventListener("mousedown", mouseDown);
     window.addEventListener("mouseup", mouseUp);
 
+    handleType();
     canvas = document.getElementById("canvasID");
     gl = canvas.getContext("webgl2");
     textCanvas = document.getElementById("textCanvasID");
@@ -205,6 +213,10 @@ function nearestEnemy()
 }
 
 function updateFrame() {
+
+
+
+
     //Update All Rockets (And clean unused ones)
     distIntoArray = 0;
     rocketMeshes.forEach(element => {
@@ -267,13 +279,18 @@ function updateFrame() {
         textCtx.fillText("Press Space to Start Game", 150, 200);
         difficulty = 1;
     } else {
+
         if (isDead) {
             textCtx.font = "100px Arial";
             textCtx.fillText("You're Dead! Press Space to restart", 170, 200);
             clearInterval(stopvar);
             difficulty = 1;
         } else {
-            textCtx.fillText("Score: " + score, 100, 100);
+            textCtx.font = "100px Arial";
+            textCtx.fillText(getWord(), 150, 200);
+           
+
+            textCtx.fillText();
             textCtx.font = "30px Arial";
             textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
             textCtx.fillText("Score: " + score, 100, 100);
@@ -286,6 +303,49 @@ function updateFrame() {
     startTime = endTime;
 
 }
+
+//start type
+
+//initiates texts and the words in them into arrays
+function handleType(){
+    lvl1.replace(/\W/g, '')
+     words = lvl1.split(" ");
+
+}
+function removeChar(){
+    if(words[wordAt]=0){
+        wordAt++;
+    }
+    words[wordAt]= words[wordAt].substring(1, words[wordAt]);;
+}
+//when a key is typed checks if it is the correct next letter and if there is no word selected pickes a word with the correct first char
+function validType(code){
+    if(wordDone){
+    for (i = 0; i < activeWords.length; i++) {
+       if(code==getKeyCode(activeWords[i].charAt(0))){
+        activeWords[i]=activeWord;
+        wordDone=false;
+       }
+      }
+    }
+
+
+}
+//get next word for the astriod when it spawns
+function getWord(){
+    var word=words[wordAt];
+return word;
+}
+function getKeyCode(char) {
+    var keyCode = char.charCodeAt(0);
+    if(keyCode > 90) {  // 90 is keyCode for 'z'
+      return keyCode - 32;
+    }
+    return keyCode;
+  }
+
+  //end type
+
 function keyUp(event) {
     console.log(camera.position);
     console.log(camera.orientation);
@@ -341,11 +401,13 @@ function mouseUp(evt) { 
 }
 var an = true;
 function keyDown(event) {
+    
     switch (event.keyCode) {
         case KEY_SPACE:
             mainMenu = false;
             isDead = false;
             rocketMeshes = [];
             break;
+            
     }
 }

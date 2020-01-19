@@ -195,6 +195,16 @@ function checkIntersection(m1, m2) {
 }
 
 function updateFrame() {
+//track pic
+
+textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
+textCtx.font = "100px Arial";
+textCtx.fillStyle = "white";
+textCtx.fillText("bruh", 150, 200);
+
+
+
+//track pic
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.clear(gl.DEPTH_BUFFER_BIT);
     if (playerMesh.position.z > destZ) {  //playerMesh is missile mesh
@@ -258,12 +268,12 @@ function updateFrame() {
     textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
     if (mainMenu) {
         textCtx.font = "100px Arial";
-        textCtx.fillText("Press Space to Start Epic Game", 150, 200);
+        textCtx.fillText("hi", 150, 200);
         difficulty = 1;
     } else {
         if (isDead) {
             textCtx.font = "100px Arial";
-            textCtx.fillText("You're Dead! Press S to restart", 170, 200);
+            textCtx.fillText("^", 170, 200);
             clearInterval(stopvar);
             difficulty = 1;
         } else {
@@ -340,6 +350,9 @@ function getKeyCode(char) {
 
   //end type
 
+  function get2DcontextFrom3Dcontext(){
+
+  }
 
 
 function mouseMove(evt) {
