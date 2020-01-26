@@ -1,11 +1,21 @@
 class TexturedMesh{
-    constructor(){
-        this.position = new Vector3();
-        this.scale = new Vector3(1, 1, 1);
-        this.orientation = new Quaternion();
-        this.totalIndices = 0;
-        this.indexOffset = 0;
-        this.textureID = 0;
+    constructor(tm){
+        if(tm == null){
+            this.position = new Vector3();
+            this.scale = new Vector3(1, 1, 1);
+            this.orientation = new Quaternion();
+            this.totalIndices = 0;
+            this.indexOffset = 0;
+            this.textureID = 0;
+        }else{
+            this.position = tm.position;
+            this.scale = tm.scale;
+            this.orientation = tm.orientation;
+            this.totalIndices = tm.totalIndices;
+            this.indexOffset = tm.indexOffset;
+            this.textureID = tm.textureID;
+        }
+        
     }
 }
 
