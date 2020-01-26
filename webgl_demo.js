@@ -1,3 +1,15 @@
+//type stuff
+var lvl1 = "beluga whale populations are exposed to a variety of stressors and threats including pollution heavy metals chemicals trash shipping energy exploration commercial fishing extreme weather events strandings subsistence harvesting and other types of human disturbance such as underwater noise The Cook Inlet population faces additional threats because of its proximity to the most densely populated area of Alaska (Anchorage) during the summer season";
+var activeWords = []; //all words(objects with words accosited to them) that are on the screen at any given time
+var activeWord=""; //The word that you are currently typing
+var wordDone=true; //if the current word is typed and a new one needs to be chosen
+var words=[];
+var wordAt=0;
+var color="green";
+//type stuff
+
+
+
 var canvas;
 var textCanvas;
 var textCtx;
@@ -322,6 +334,11 @@ function updateFrame() {
             clearInterval(stopvar);
             difficulty = 1;
         } else {
+            
+             textCtx.fillStyle = color;
+            textCtx.font = "100px Arial";
+            textCtx.fillText(getWord(), 150, 200);
+            
             textCtx.fillText("Score: " + score, 100, 100);
             textCtx.font = "30px Arial";
             textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
@@ -335,6 +352,60 @@ function updateFrame() {
     startTime = endTime;
 
 }
+//start type
+
+//initiates texts and the words in them into arrays
+function handleType(){
+    lvl1.replace(/\W/g, '')
+     words = lvl1.split(" ");
+
+}
+function removeChar(){
+    if(words[wordAt].length==1){
+        wordAt++;
+    }else{
+        words[wordAt]= words[wordAt].substring(1, words[wordAt].length);;
+    }
+}
+//when a key is typed checks if it is the correct next letter and if there is no word selected pickes a word with the correct first char
+function validType(code){
+    if(wordDone){
+    for (i = 0; i < activeWords.length; i++) {
+       if(code==getKeyCode(activeWords[i].charAt(0))){
+        activeWords[i]=activeWord;
+        wordDone=false;
+       }else{
+
+    }
+    }
+    }else{}
+    if(code==getKeyCode(words[wordAt].charAt(0))){
+        color="white";
+        removeChar();
+        activeWords[i]=activeWord;
+        wordDone=false;
+       }else{
+        color="red";
+    }
+}
+
+
+
+
+//get next word for the astriod when it spawns
+function getWord(){
+    var word=words[wordAt];
+return word;
+}
+function getKeyCode(char) {
+    var keyCode = char.charCodeAt(0);
+    if(keyCode > 90) {  // 90 is keyCode for 'z'
+      return keyCode - 32;
+    }
+    return keyCode;
+  }
+
+  //end type
 function keyUp(event) {
     console.log(camera.position);
     console.log(camera.orientation);
@@ -396,14 +467,9 @@ function keyDown(event) {
             }
             break;
 
-        case KEY_P:
-            console.log("paused")
-            paused=!paused;
-            if(paused){
-
-            }else{
-                document.getElementById("p2").style.color = "blue";
-            }
-            break;
+        default:
+           // removeChar();
+            validType(event.keyCode);
+            
     }
 }
