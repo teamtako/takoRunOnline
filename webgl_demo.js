@@ -279,12 +279,7 @@ function updateFrame() {
         console.log("" + fishyMesh.position.y);
     } else {
         fishyMesh.position.x -= (.1 * difficulty);
-        if (difficulty < 3) {
-            difficulty += .001;
-        } else {
-            fishyMesh.position.y += (playerMesh.position.y - fishyMesh.position.y) * .01;
-            fishyMesh.position.z += (playerMesh.position.z - fishyMesh.position.z) * .01;
-        }
+       
 
     }
     fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
@@ -294,11 +289,7 @@ function updateFrame() {
         difficulty = 1;
     }
 
-    if (fishyMesh.position.x <= -7) { //fishyMesh is asteroid mesh 
-        fishyMesh.position.x = 320;
-    } else {
-        fishyMesh.position.x -= speeds[i];
-    }
+  
     fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
     }
 
