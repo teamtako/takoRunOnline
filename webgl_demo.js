@@ -172,9 +172,10 @@ window.onload = function () {
     asteroid9 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
 
     asteroids = [asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6];
+    rocketMesh = createTexturedMesh(rocketData[0], rocketData[1]);
     rocketMesh.scale.scale(1);
     rocketMesh.orientation.rotate(new Vector3(-1 ,0,0), -Math.PI);
-    rocketMesh = createTexturedMesh(rocketData[0], rocketData[1]);
+    
     speeds = [Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1];
 
     for(i = 0; i < asteroids.length; i++){
@@ -235,7 +236,7 @@ function updateFrame() {
     distIntoArray = 0;
     rocketMeshes.forEach(element => {
         element.position.add(new Vector3(20 * deltaTime * ((element.orientation.x) / Math.PI),20 * deltaTime * ((element.orientation.y) / Math.PI),20 * deltaTime * ((element.orientation.z) / Math.PI)));
-        dist = Vector3.sub(element.position, nearestEnemy().position);
+       
        if (element.position.x > 60)
         {
           rocketMeshes.splice(distIntoArray,1);
