@@ -20,6 +20,13 @@ var asteroid4;
 var asteroid5;
 var asteroid6;
 
+var asteroid1;
+var asteroid2;
+var asteroid3;
+var asteroid4;
+var asteroid5;
+var asteroid6;
+
 var stopvar;
 var verticalVelocity = 0;
 var gravity = 1;
@@ -153,13 +160,14 @@ window.onload = function () {
     initTexturedMeshRenderer();
     initSkyboxRenderer();
 
-    
-    /*loadSkyboxFaceImage(skyboxImageData[0], 256, 256, "-x");
-    loadSkyboxFaceImage(skyboxImageData[1], 256, 256, "-z");
-    loadSkyboxFaceImage(skyboxImageData[2], 256, 256, "+x");
-    loadSkyboxFaceImage(skyboxImageData[3], 256, 256, "+z");
-    loadSkyboxFaceImage(skyboxImageData[4], 256, 256, "+y");
-    loadSkyboxFaceImage(skyboxImageData[5], 256, 256, "-y");*/
+
+    loadSkyboxFaceImage(SeaSkybox[0], 256, 256, "+x");
+    loadSkyboxFaceImage(SeaSkybox[3], 256, 256, "+z");
+    loadSkyboxFaceImage(SeaSkybox[2], 256, 256, "-x");
+    loadSkyboxFaceImage(SeaSkybox[3], 256, 256, "-z");
+    loadSkyboxFaceImage(SeaSkybox[4], 256, 256, "-y");
+    loadSkyboxFaceImage(SeaSkybox[5], 256, 256, "+y");
+
 
     asteroid1 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
     asteroid2 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
@@ -251,6 +259,8 @@ function updateFrame() {
     //     playerMesh.position.y = 0;
     //     jumping = false;
     // }
+
+
 
 
 
@@ -383,6 +393,16 @@ function keyDown(event) {
             isDead = false;
             for(i = 0; i < asteroids.length; i++){
                 asteroids[i].position.x = 20;
+            }
+            break;
+
+        case KEY_P:
+            console.log("paused")
+            paused=!paused;
+            if(paused){
+
+            }else{
+                document.getElementById("p2").style.color = "blue";
             }
             break;
     }
