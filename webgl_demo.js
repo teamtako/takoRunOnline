@@ -184,7 +184,7 @@ window.onload = function () {
     rocketMesh.scale.scale(1);
     rocketMesh.orientation.rotate(new Vector3(-1 ,0,0), -Math.PI);
     
-    speeds = [Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1];
+    speeds = [Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5];
 
     for(i = 0; i < asteroids.length; i++){
         var fishyMesh = asteroids[i];
@@ -270,7 +270,7 @@ function updateFrame() {
     for(i = 0; i < asteroids.length; i++){
     var fishyMesh = asteroids[i];
     if (fishyMesh.position.x <= -7) {
-        speeds[i] = Math.random()*0.1;
+        speeds[i] = Math.random()*0.5;
         // fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
         fishyMesh.position.x = 320 / (difficulty);
         fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
@@ -278,7 +278,7 @@ function updateFrame() {
         fishyMesh.position.y = (Math.random() * 16)-10;
         console.log("" + fishyMesh.position.y);
     } else {
-        fishyMesh.position.x -= (.1 * difficulty);
+        fishyMesh.position.x -= (speeds[i] * difficulty);
        
 
     }
@@ -372,7 +372,7 @@ function keyDown(event) {
             mainMenu = !mainMenu;
             isDead = false;
             for(i = 0; i < asteroids.length; i++){
-                asteroids[i].position.x = 20;
+                asteroids[i].position.x = 320;
             }
             break;
 
