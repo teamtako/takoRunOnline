@@ -10,6 +10,8 @@ var playerMesh;
 var meshes = [];
 var asteroids = [];
 var speeds = [];
+var rocketMesh;
+var rocketMeshes = [];
 
 var asteroid1;
 var asteroid2;
@@ -151,12 +153,13 @@ window.onload = function () {
     initTexturedMeshRenderer();
     initSkyboxRenderer();
 
-    loadSkyboxFaceImage(skyboxImageData[0], 256, 256, "-x");
+    
+    /*loadSkyboxFaceImage(skyboxImageData[0], 256, 256, "-x");
     loadSkyboxFaceImage(skyboxImageData[1], 256, 256, "-z");
     loadSkyboxFaceImage(skyboxImageData[2], 256, 256, "+x");
     loadSkyboxFaceImage(skyboxImageData[3], 256, 256, "+z");
     loadSkyboxFaceImage(skyboxImageData[4], 256, 256, "+y");
-    loadSkyboxFaceImage(skyboxImageData[5], 256, 256, "-y");
+    loadSkyboxFaceImage(skyboxImageData[5], 256, 256, "-y");*/
 
     asteroid1 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
     asteroid2 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
@@ -169,7 +172,9 @@ window.onload = function () {
     asteroid9 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
 
     asteroids = [asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6];
-
+    rocketMesh.scale.scale(1);
+    rocketMesh.orientation.rotate(new Vector3(-1 ,0,0), -Math.PI);
+    rocketMesh = createTexturedMesh(rocketData[0], rocketData[1]);
     speeds = [Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1];
 
     for(i = 0; i < asteroids.length; i++){
@@ -227,6 +232,17 @@ function updateFrame() {
         playerMesh.position.y += mvmtSpeed;
     }
 
+    distIntoArray = 0;
+    rocketMeshes.forEach(element => {
+        element.position.add(new Vector3(20 * deltaTime * ((element.orientation.x) / Math.PI),20 * deltaTime * ((element.orientation.y) / Math.PI),20 * deltaTime * ((element.orientation.z) / Math.PI)));
+        dist = Vector3.sub(element.position, nearestEnemy().position);
+       if (element.position.x > 60)
+        {
+          rocketMeshes.splice(distIntoArray,1);
+          element = null;
+        }
+        distIntoArray++;
+      });
 
     // verticalVelocity -= gravity * deltaTime;
     // playerMesh.position.y += verticalVelocity;
@@ -278,6 +294,7 @@ function updateFrame() {
     camera.updateView(deltaTime);
     renderTexturedMeshes(meshes, camera, new Vector3(4, 4, 4));
     renderTexturedMeshes(asteroids, camera, new Vector3(4, 4, 4));
+    renderTexturedMeshes(rocketMeshes, camera, new Vector3(4, 4, 4));
     renderSkybox(camera.projectionMatrix, camera.orientation);
 
     textCtx.font = "30px Arial";
@@ -339,9 +356,17 @@ function mouseMove(evt) {
     destY = (((mouseY / canvas.height) * -8) + 6);
 }
 function mouseDown(evt) {
-    if(!mainMenu){
-        speed = 0.2;
-    }
+    rocketMeshes.push(new TexturedMesh(rocketMesh));
+        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
+        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,-.1),1);
+
+        rocketMeshes.push(new TexturedMesh(rocketMesh));
+        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
+        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,.1),1);
+
+        rocketMeshes.push(new TexturedMesh(rocketMesh));
+        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
+        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,0),1);
     console.log("down");
 }
 function mouseUp(evt) {
