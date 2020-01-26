@@ -177,7 +177,7 @@ window.onload = function () {
 
     asteroids = [asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6];
 
-    speeds = [Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1];
+    speeds = [Math.random()*4,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5];
 
     for(i = 0; i < asteroids.length; i++){
         var fishyMesh = asteroids[i];
@@ -252,7 +252,7 @@ function updateFrame() {
     for(i = 0; i < asteroids.length; i++){
     var fishyMesh = asteroids[i];
     if (fishyMesh.position.x <= -7) {
-        speeds[i] = Math.random()*0.1;
+        speeds[i] = Math.random()*0.5;
         // fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
         fishyMesh.position.x = 320 / (difficulty);
         fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
