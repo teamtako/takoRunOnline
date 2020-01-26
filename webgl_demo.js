@@ -193,7 +193,7 @@ window.onload = function () {
 
     asteroids = [asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6];
 
-    speeds = [Math.random()*4,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5];
+    speeds = [Math.random()*0,5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5];
   
     rocketMesh = createTexturedMesh(rocketData[0], rocketData[1]);
     rocketMesh.scale.scale(1);
