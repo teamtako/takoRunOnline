@@ -265,10 +265,6 @@ function updateFrame() {
     }
     fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
 
-    if (Vector3.length(Vector3.sub(fishyMesh.position, playerMesh.position)) < 1.2) {
-        score = 0;
-        difficulty = 1;
-    }
 
     if (fishyMesh.position.x <= -7) { //fishyMesh is asteroid mesh 
         fishyMesh.position.x = 20;
@@ -352,7 +348,8 @@ var an = true;
 function keyDown(event) {
     switch (event.keyCode) {
         case KEY_SPACE:
-            mainMenu = !mainMenu;
+        score = 0;    
+        mainMenu = !mainMenu;
             isDead = false;
             fishyMesh.position.x = 20;
             break;
