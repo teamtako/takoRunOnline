@@ -1,7 +1,11 @@
-var lvl1 = "Beluga whale populations are exposed to a variety of stressors and threats, including pollution  heavy metals, chemicals, trash shipping energy exploration, commercial fishing, extreme weather events, strandings, subsistence harvesting, and other types of human disturbance such as underwater noise. The Cook Inlet population faces additional threats because of its proximity to the most densely populated area of Alaska (Anchorage) during the summer season.";
+var lvl1 = "beluga whale populations are exposed to a variety of stressors and threats including pollution heavy metals chemicals trash shipping energy exploration commercial fishing extreme weather events strandings subsistence harvesting and other types of human disturbance such as underwater noise The Cook Inlet population faces additional threats because of its proximity to the most densely populated area of Alaska (Anchorage) during the summer season";
 var activeWords = []; //all words(objects with words accosited to them) that are on the screen at any given time
 var activeWord=""; //The word that you are currently typing
 var wordDone=true; //if the current word is typed and a new one needs to be chosen
+var words=[];
+var wordAt=0;
+var color="green";
+
 
 var canvas;
 var textCanvas;
@@ -14,7 +18,7 @@ var camera;
 var fishyMesh;
 var playerMesh;
 var meshes = [];
-
+var rocketMesh;
 
 var stopvar;
 var verticalVelocity = 0;
@@ -34,12 +38,15 @@ var mvmtSpeed = 0.01;
 var isDead = false;
 var score = 0;
 var mainMenu = true;
+var missile = false;
 
 var difficulty;
 
 var speed = 0.1;
 var destZ = 0;
 var destY = 0;
+var rocketMeshes = [];
+var enemyMeshes = [];
 
 const KEY_0 = 48;
 const KEY_1 = 49;
@@ -90,6 +97,7 @@ window.onload = function () {
     window.addEventListener("mousedown", mouseDown);
     window.addEventListener("mouseup", mouseUp);
 
+    handleType();
     canvas = document.getElementById("canvasID");
     gl = canvas.getContext("webgl2");
     textCanvas = document.getElementById("textCanvasID");
@@ -159,52 +167,91 @@ window.onload = function () {
     fishyMesh = createTexturedMesh(vertices, indices);
     //fishyMesh.textureID = generateGLTexture2D(monkeyPixels, 1024, 1024);
     fishyMesh.orientation.rotate(new Vector3(0, 1, 0), -Math.PI);
-    fishyMesh.position.y = 2;
     let verts = [];
     let inds = [];
     generateUnitCubeVerticesIndexedWithNormalsTexCoords(verts, inds);
     //this.playerMesh = createTexturedMesh(verts, inds);
     playerMesh = createTexturedMesh(missileData[0], missileData[1]);
     fishyMesh = createTexturedMesh(asteroidData[0],asteroidData[1])
+    rocketMesh = createTexturedMesh(rocketData[0], rocketData[1]);
     playerMesh.orientation.rotate(new Vector3(0, 1, 0), -Math.PI);
-    meshes = [fishyMesh, playerMesh];
+    rocketMesh.scale.scale(1);
+    rocketMesh.orientation.rotate(new Vector3(-1 ,0,0), -Math.PI);
+    meshes = [playerMesh];
+    
 
     startTime = new Date().getTime();
 
 
-    fishyMesh.position.x -= (.1);
     difficulty = 1;
     setInterval(updateFrame, 1);
     stopvar = setInterval(updateFrame, 1);
-
+    addEnemy();
 }
 
 function checkIntersection(m1, m2) {
     dist = Vector3.sub(m1.position, m2.position);
-    if (Vector3.length(dist) < 1) {
-        m1.verts
-        gl.clearColor(1, 0, 0, 1);
+    if (Vector3.length(dist) < 1.5) {
+        m1.verts;
         isDead = true;
-
-        console.log("should Be dead");
-
     } else {
         gl.clearColor(0.5, 0.7, 1.0, 1.0);
 
     }
 }
 
+function nearestEnemy()
+{
+    shortestDist = 9999999;
+    reEnemy = null;
+    enemyMeshes.forEach(element => {
+    dist = Vector3.sub(element.position, playerMesh.position);
+    if (dist < shortestDist)
+    {
+        shortestDist = dist; reEnemy = element;
+    }
+    });
+    return reEnemy;
+}
+
 function updateFrame() {
-//track pic
-
-textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
-textCtx.font = "100px Arial";
-textCtx.fillStyle = "white";
-textCtx.fillText("bruh", 150, 200);
 
 
 
-//track pic
+
+    //Update All Rockets (And clean unused ones)
+    distIntoArray = 0;
+    rocketMeshes.forEach(element => {
+      element.position.add(new Vector3(20 * deltaTime * ((element.orientation.x) / Math.PI),20 * deltaTime * ((element.orientation.y) / Math.PI),20 * deltaTime * ((element.orientation.z) / Math.PI)));
+      dist = Vector3.sub(element.position, nearestEnemy().position);
+      if(Vector3.length(dist) < 1.5)
+      {
+     
+        rocketMeshes.splice(distIntoArray,1);
+        element = null;
+      } else if (element.position.x > 60)
+      {
+        rocketMeshes.splice(distIntoArray,1);
+        element = null;
+      }
+      distIntoArray++;
+    });
+    // Update All Enemies
+    distIntoArray = 0;
+    enemyMeshes.forEach(element => {
+    element.position.add(new Vector3(-0.1,0,0));
+    element.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
+     if (element.position.x <= -7)
+      {
+        enemyMeshes.splice(distIntoArray,1);
+        element = null;
+        addEnemy();
+
+      }
+      checkIntersection(element, playerMesh);
+      distIntoArray++;
+    });
+
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.clear(gl.DEPTH_BUFFER_BIT);
     if (playerMesh.position.z > destZ) {  //playerMesh is missile mesh
@@ -217,72 +264,41 @@ textCtx.fillText("bruh", 150, 200);
     } else if (playerMesh.position.y < destY) {
         playerMesh.position.y += mvmtSpeed;
     }
-    camera.position = new Vector3(playerMesh.position.x, playerMesh.position.y, playerMesh.position.z);
 
-    // verticalVelocity -= gravity * deltaTime;
-    // playerMesh.position.y += verticalVelocity;
-    // if(playerMesh.position.y < 0){
-    //     playerMesh.position.y = 0;
-    //     jumping = false;
-    // }
-
-    playerMesh.position.z = ((mouseX / canvas.width) * 8) - 4;
-    playerMesh.position.y = ((mouseY / canvas.height) * -8) + 6;
-
-    if (fishyMesh.position.x <= -7) {
-        fishyMesh.position.x = 80 / (difficulty);
-        fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
-        fishyMesh.position.z = (Math.random() - .5) * 8;
-        fishyMesh.position.y = Math.random() * 3;
-        console.log("" + fishyMesh.position.y);
-    } else {
-        fishyMesh.position.x -= (.1 * difficulty);
-        if (difficulty < 3) {
-            difficulty += .001;
-        } else {
-            fishyMesh.position.y += (playerMesh.position.y - fishyMesh.position.y) * .01;
-            fishyMesh.position.z += (playerMesh.position.z - fishyMesh.position.z) * .01;
-        }
-
-    }
-    fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
-
-    if (Vector3.length(Vector3.sub(fishyMesh.position, playerMesh.position)) < 1.2) {
-        score = 0;
-        difficulty = 1;
-    }
-
-    if (fishyMesh.position.x <= -7) { //fishyMesh is asteroid mesh 
-        fishyMesh.position.x = 20;
-    } else {
-        fishyMesh.position.x -= speed;
-    }
-    fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
+    camera.position =  new Vector3(playerMesh.position.x - 4,playerMesh.position.y + 1,playerMesh.position.z);
 
     camera.updateView(deltaTime);
     renderTexturedMeshes(meshes, camera, new Vector3(4, 4, 4));
-    //renderSkybox(camera.projectionMatrix, camera.orientation);
+    renderTexturedMeshes(rocketMeshes, camera, new Vector3(4, 4, 4));
+    renderTexturedMeshes(enemyMeshes, camera, new Vector3(4, 4, 4));
+    renderSkybox(camera.projectionMatrix, camera.orientation);
 
     textCtx.font = "30px Arial";
     textCtx.fillStyle = "white";
     textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
     if (mainMenu) {
         textCtx.font = "100px Arial";
-        textCtx.fillText("hi", 150, 200);
+        textCtx.fillText("Press Space to Start Game", 150, 200);
         difficulty = 1;
     } else {
+
         if (isDead) {
             textCtx.font = "100px Arial";
-            textCtx.fillText("^", 170, 200);
+            textCtx.fillText("You're Dead! Press Space to restart", 170, 200);
             clearInterval(stopvar);
             difficulty = 1;
         } else {
-            textCtx.fillText("Score: " + score, 100, 100);
+            textCtx.fillStyle = color;
+            textCtx.font = "100px Arial";
+            textCtx.fillText(getWord(), 150, 200);
+           
+
+            textCtx.fillText();
             textCtx.font = "30px Arial";
             textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
             textCtx.fillText("Score: " + score, 100, 100);
-            score += deltaTime;
-            checkIntersection(fishyMesh, playerMesh);
+ 
+            
         }
     }
     endTime = new Date().getTime();
@@ -290,6 +306,62 @@ textCtx.fillText("bruh", 150, 200);
     startTime = endTime;
 
 }
+
+//start type
+
+//initiates texts and the words in them into arrays
+function handleType(){
+    lvl1.replace(/\W/g, '')
+     words = lvl1.split(" ");
+
+}
+function removeChar(){
+    if(words[wordAt].length==1){
+        wordAt++;
+    }else{
+        words[wordAt]= words[wordAt].substring(1, words[wordAt].length);;
+    }
+}
+//when a key is typed checks if it is the correct next letter and if there is no word selected pickes a word with the correct first char
+function validType(code){
+    if(wordDone){
+    for (i = 0; i < activeWords.length; i++) {
+       if(code==getKeyCode(activeWords[i].charAt(0))){
+        activeWords[i]=activeWord;
+        wordDone=false;
+       }else{
+
+    }
+    }
+    }else{}
+    if(code==getKeyCode(words[wordAt].charAt(0))){
+        color="white";
+        removeChar();
+        activeWords[i]=activeWord;
+        wordDone=false;
+       }else{
+        color="red";
+    }
+}
+
+
+
+
+//get next word for the astriod when it spawns
+function getWord(){
+    var word=words[wordAt];
+return word;
+}
+function getKeyCode(char) {
+    var keyCode = char.charCodeAt(0);
+    if(keyCode > 90) {  // 90 is keyCode for 'z'
+      return keyCode - 32;
+    }
+    return keyCode;
+  }
+
+  //end type
+
 function keyUp(event) {
     console.log(camera.position);
     console.log(camera.orientation);
@@ -300,7 +372,6 @@ function keyUp(event) {
             if (isDead == true) {
                 gl.clearColor(0.5, 0.7, 1.0, 1.0);
                 playerMesh.position.z = ((mouseX / canvas.width) * 2) + -1;
-                fishyMesh.position.x = 22;
                 playerMesh.position.y = ((mouseY / canvas.height) * -2) + 3;
                 score = 0;
                 startTime = new Date().getTime();
@@ -313,47 +384,13 @@ function keyUp(event) {
     }
 }
 
-
-
-//start type
-
-//initiates texts and the words in them into arrays
-function handleType(){
-    lvl1.replace(/\W/g, '')
-    var arr1 = str.split(" ");
+function addEnemy()
+{
+    enemyMeshes.push(new TexturedMesh(fishyMesh));
+    enemyMeshes[enemyMeshes.length - 1].position = new Vector3(100,0,0);
+    //enemyMeshes[enemyMeshes.length - 1].position = new Vector3((Math.random()-.5) * 2 * canvas.width,(Math.random()-.5) * 2 * canvas.height,100);
 
 }
-//when a key is typed checks if it is the correct next letter and if there is no word selected pickes a word with the correct first char
-function validType(code){
-    if(wordDone){
-    for (i = 0; i < activeWords.length; i++) {
-       if(code==getKeyCode(activeWords[i].charAt(0))){
-        activeWords[i]=activeWord;
-        wordDone=false;
-       }
-      }
-    }
-
-
-}
-//get next word for the astriod when it spawns
-function getWord(){
-
-}
-function getKeyCode(char) {
-    var keyCode = char.charCodeAt(0);
-    if(keyCode > 90) {  // 90 is keyCode for 'z'
-      return keyCode - 32;
-    }
-    return keyCode;
-  }
-
-  //end type
-
-  function get2DcontextFrom3Dcontext(){
-
-  }
-
 
 function mouseMove(evt) {
     mouseX = evt.x;
@@ -362,25 +399,34 @@ function mouseMove(evt) {
     destY = (((mouseY / canvas.height) * -8) + 6);
 }
 function mouseDown(evt) {
-    speed = 0.2;
+        
+        rocketMeshes.push(new TexturedMesh(rocketMesh));
+        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
+        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,-.1),1);
 
-    console.log("down");
+        rocketMeshes.push(new TexturedMesh(rocketMesh));
+        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
+        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,.1),1);
+
+        rocketMeshes.push(new TexturedMesh(rocketMesh));
+        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
+        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,0),1);
 }
-function mouseUp(evt) {
-    speed = 0.1;
-
-    console.log("up");
+function mouseUp(evt) { 
+ 
 }
 var an = true;
 function keyDown(event) {
     
-
     switch (event.keyCode) {
         case KEY_SPACE:
-            mainMenu = !mainMenu;
+            mainMenu = false;
             isDead = false;
-            fishyMesh.position.x = 20;
+            rocketMeshes = [];
             break;
+        default:
+           // removeChar();
+            validType(event.keyCode);
+            
     }
 }
-
