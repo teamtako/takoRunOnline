@@ -7,11 +7,19 @@ var gl;
 var light;
 var camera;
 
-var fishyMesh;
 var playerMesh;
 var meshes = [];
+var asteroids = [];
+var speeds = [];
 
 var txtArr;
+
+var asteroid1;
+var asteroid2;
+var asteroid3;
+var asteroid4;
+var asteroid5;
+var asteroid6;
 
 var stopvar;
 var verticalVelocity = 0;
@@ -113,7 +121,7 @@ window.onload = function () {
     canvas.width = window.innerWidth * 0.95;
     canvas.height = window.innerHeight * 0.95;
     gl.viewport(0, 0, canvas.width, canvas.height);
-    //gl.enable(gl.CULL_FACE);
+    gl.enable(gl.CULL_FACE);
     gl.clearColor(0.5, 0.7, 1.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
 
@@ -165,23 +173,40 @@ window.onload = function () {
     loadSkyboxFaceImage(SeaSkybox[4], 256, 256, "-y");
     loadSkyboxFaceImage(SeaSkybox[5], 256, 256, "+y");
 
-    fishyMesh = createTexturedMesh(vertices, indices);
-    //fishyMesh.textureID = generateGLTexture2D(monkeyPixels, 1024, 1024);
-    fishyMesh.orientation.rotate(new Vector3(0, 1, 0), -Math.PI);
-    fishyMesh.position.y = 2;
-    let verts = [];
-    let inds = [];
-    generateUnitCubeVerticesIndexedWithNormalsTexCoords(verts, inds);
+    asteroid1 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid2 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid3 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid4 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid5 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid6 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid7 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid8 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    asteroid9 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+
+    asteroids = [asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6];
+
+    speeds = [Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1,Math.random()*0.1];
+
+    for(i = 0; i < asteroids.length; i++){
+        var fishyMesh = asteroids[i];
+        // fishyMesh.textureID = generateGLTexture2D(monkeyPixels, 1024, 1024);
+        fishyMesh.scale = new Vector3(0.7,0.7,0.7);
+        fishyMesh.orientation.rotate(new Vector3(0, 1, 0), -Math.PI);
+        fishyMesh.position.y = 2;
+        fishyMesh.position.x -= (.1);
+    }   
+    
+    // let verts = [];
+    // let inds = [];
+    // generateUnitCubeVerticesIndexedWithNormalsTexCoords(verts, inds); // generates unit cube vertices that is indexed with normal texture coordinates
     //this.playerMesh = createTexturedMesh(verts, inds);
     playerMesh = createTexturedMesh(missileData[0], missileData[1]);
-    fishyMesh = createTexturedMesh(asteroidData[0],asteroidData[1])
     playerMesh.orientation.rotate(new Vector3(0, 1, 0), -Math.PI);
-    meshes = [fishyMesh, playerMesh];
+    meshes = [playerMesh];
 
     startTime = new Date().getTime();
 
 
-    fishyMesh.position.x -= (.1);
     difficulty = 1;
     setInterval(updateFrame, 1);
     stopvar = setInterval(updateFrame, 1);
@@ -244,14 +269,20 @@ function updateFrame() {
     camera.position = new Vector3(cX, cY, cZ);
 
 
+
+
     playerMesh.position.z = ((mouseX / canvas.width) * 8) - 4;
     playerMesh.position.y = ((mouseY / canvas.height) * -8) + 6;
 
+    for(i = 0; i < asteroids.length; i++){
+    var fishyMesh = asteroids[i];
     if (fishyMesh.position.x <= -7) {
-        fishyMesh.position.x = 80 / (difficulty);
+        speeds[i] = Math.random()*0.1;
+        // fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
+        fishyMesh.position.x = 320 / (difficulty);
         fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
-        fishyMesh.position.z = (Math.random() - .5) * 8;
-        fishyMesh.position.y = Math.random() * 3;
+        fishyMesh.position.z = (Math.random() - .5) * 16;
+        fishyMesh.position.y = (Math.random() * 16)-10;
         console.log("" + fishyMesh.position.y);
     } else {
         fishyMesh.position.x -= (.1 * difficulty);
@@ -271,14 +302,16 @@ function updateFrame() {
     }
 
     if (fishyMesh.position.x <= -7) { //fishyMesh is asteroid mesh 
-        fishyMesh.position.x = 20;
+        fishyMesh.position.x = 320;
     } else {
-        fishyMesh.position.x -= speed;
+        fishyMesh.position.x -= speeds[i];
     }
     fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
+    }
 
     camera.updateView(deltaTime);
     renderTexturedMeshes(meshes, camera, new Vector3(4, 4, 4));
+    renderTexturedMeshes(asteroids, camera, new Vector3(4, 4, 4));
     renderSkybox(camera.projectionMatrix, camera.orientation);
 
     textCtx.font = "30px Arial";
@@ -319,7 +352,9 @@ function keyUp(event) {
             if (isDead == true) {
                 gl.clearColor(0.5, 0.7, 1.0, 1.0);
                 playerMesh.position.z = ((mouseX / canvas.width) * 2) + -1;
-                fishyMesh.position.x = 22;
+                for(i = 0; i < asteroids.length; i++){
+                    asteroids[i].position.x = 22;
+                }
                 playerMesh.position.y = ((mouseY / canvas.height) * -2) + 3;
                 score = 0;
                 startTime = new Date().getTime();
@@ -339,8 +374,9 @@ function mouseMove(evt) {
     destY = (((mouseY / canvas.height) * -8) + 6);
 }
 function mouseDown(evt) {
-    speed = 0.2;
-
+    if(!mainMenu){
+        speed = 0.2;
+    }
     console.log("down");
 }
 function mouseUp(evt) {
@@ -354,7 +390,9 @@ function keyDown(event) {
         case KEY_SPACE:
             mainMenu = !mainMenu;
             isDead = false;
-            fishyMesh.position.x = 20;
+            for(i = 0; i < asteroids.length; i++){
+                asteroids[i].position.x = 20;
+            }
             break;
 
         case KEY_P:
