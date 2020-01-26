@@ -287,6 +287,7 @@ function updateFrame() {
     if (Vector3.length(Vector3.sub(fishyMesh.position, playerMesh.position)) < 1.2) {
         score = 0;
         difficulty = 1;
+        mainMenu = true;
     }
 
   
@@ -307,19 +308,14 @@ function updateFrame() {
         textCtx.fillText("Press Space to Start Epic Game", 150, 200);
         difficulty = 1;
     } else {
-        if (isDead) {
-            textCtx.font = "100px Arial";
-            textCtx.fillText("You're Dead! Press S to restart", 170, 200);
-            clearInterval(stopvar);
-            difficulty = 1;
-        } else {
+
             textCtx.fillText("Score: " + score, 100, 100);
             textCtx.font = "30px Arial";
             textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
             textCtx.fillText("Score: " + score, 100, 100);
             score += deltaTime;
             checkIntersection(fishyMesh, playerMesh);
-        }
+        
     }
     endTime = new Date().getTime();
     deltaTime = (endTime - startTime) / 1000.0;
@@ -358,13 +354,6 @@ function mouseMove(evt) {
     destY = (((mouseY / canvas.height) * -8) + 6);
 }
 function mouseDown(evt) {
-    rocketMeshes.push(new TexturedMesh(rocketMesh));
-        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
-        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,-.1),1);
-
-        rocketMeshes.push(new TexturedMesh(rocketMesh));
-        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
-        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,.1),1);
 
         rocketMeshes.push(new TexturedMesh(rocketMesh));
         rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
