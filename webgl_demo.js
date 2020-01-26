@@ -159,9 +159,9 @@ window.onload = function () {
     initSkyboxRenderer();
 
     loadSkyboxFaceImage(SeaSkybox[0], 256, 256, "+x");
-    loadSkyboxFaceImage(SeaSkybox[1], 256, 256, "-z");
-    loadSkyboxFaceImage(SeaSkybox[2], 256, 256, "-x");
     loadSkyboxFaceImage(SeaSkybox[3], 256, 256, "+z");
+    loadSkyboxFaceImage(SeaSkybox[2], 256, 256, "-x");
+    loadSkyboxFaceImage(SeaSkybox[3], 256, 256, "-z");
     loadSkyboxFaceImage(SeaSkybox[4], 256, 256, "-y");
     loadSkyboxFaceImage(SeaSkybox[5], 256, 256, "+y");
 
