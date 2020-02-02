@@ -212,6 +212,8 @@ window.onload = function () {
 
 }
 
+
+
 function checkIntersection(m1, m2) {
     dist = Vector3.sub(m1.position, m2.position);
     if (Vector3.length(dist) < 1) {
@@ -241,17 +243,21 @@ function updateFrame() {
         playerMesh.position.y += mvmtSpeed;
     }
 
-    distIntoArray = 0;
-    rocketMeshes.forEach(element => {
-        element.position.add(new Vector3(20 * deltaTime * ((element.orientation.x) / Math.PI),20 * deltaTime * ((element.orientation.y) / Math.PI),20 * deltaTime * ((element.orientation.z) / Math.PI)));
-       
-       if (element.position.x > 60)
+
+    for (let indexI = 0; indexI < rocketMeshes.length; indexI++) {
+        //console.log(rocketMeshes.length);
+       // console.log(rocketMeshes[indexI].position.x);
+        moveTowardsNearestEnemy(rocketMeshes[indexI], .04);
+       //rocketMeshes[indexI].position.add(new Vector3(20 * deltaTime * ((rocketMeshes[indexI].orientation.x) / Math.PI),20 * deltaTime * ((rocketMeshes[indexI].orientation.y) / Math.PI),20 * deltaTime * ((rocketMeshes[indexI].orientation.z) / Math.PI)));
+        if (rocketMeshes[indexI].position.x > 60)
         {
-          rocketMeshes.splice(distIntoArray,1);
+          rocketMeshes.splice(indexI,1);
           element = null;
         }
-        distIntoArray++;
-      });
+  
+    }
+
+        //element.position.add(new Vector3(20 * deltaTime * ((element.orientation.x) / Math.PI),20 * deltaTime * ((element.orientation.y) / Math.PI),20 * deltaTime * ((element.orientation.z) / Math.PI)));
 
     // verticalVelocity -= gravity * deltaTime;
     // playerMesh.position.y += verticalVelocity;
@@ -276,7 +282,7 @@ function updateFrame() {
         fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
         fishyMesh.position.z = (Math.random() - .5) * 16;
         fishyMesh.position.y = (Math.random() * 16)-10;
-        console.log("" + fishyMesh.position.y);
+      
     } else {
         fishyMesh.position.x -= (speeds[i] * difficulty);
        
@@ -322,6 +328,46 @@ function updateFrame() {
     startTime = endTime;
 
 }
+
+function moveTowardsNearestEnemy(object1, speed)
+{
+    console.log(object1.position.x);
+    var nearE = asteroid1;
+    var closest = 999;
+    asteroids.forEach(element => {
+        if(element != null){
+        var xdist = Math.abs(element.position.x) - Math.abs(object1.position.x);
+    
+        if( xdist < closest)
+        {
+            closest = xdist;
+            nearE = element;   
+        }
+    }
+   
+        
+    });
+    var newMovement = new Vector3();
+ 
+        newMovement.x = 1 * speed;
+   
+    if(object1.position.y > nearE.position.y)
+    {
+        newMovement.y = -.5 * speed;
+    } else {
+        newMovement.y = .5 * speed;
+    }
+    if(object1.position.z > nearE.position.z)
+    {
+        newMovement.z = -.5 * speed;
+    } else {
+        newMovement.z = .5 * speed;
+    }
+    object1.position.add(newMovement);
+
+}
+
+
 function keyUp(event) {
     console.log(camera.position);
     console.log(camera.orientation);
