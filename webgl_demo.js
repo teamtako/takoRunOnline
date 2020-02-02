@@ -32,13 +32,6 @@ var asteroid4;
 var asteroid5;
 var asteroid6;
 
-var asteroid1;
-var asteroid2;
-var asteroid3;
-var asteroid4;
-var asteroid5;
-var asteroid6;
-
 var stopvar;
 var verticalVelocity = 0;
 var gravity = 1;
@@ -131,37 +124,6 @@ window.onload = function () {
     gl.clearColor(0.5, 0.7, 1.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
 
-    let vertices = [
-        -0.5, -0.5, 0.5, 0, 0, 1, 0.0, 1.0,
-        -0.5, 0.5, 0.5, 0, 0, 1, 0.0, 0.0,
-        0.5, 0.5, 0.5, 0, 0, 1, 1.0, 0.0,
-        0.5, -0.5, 0.5, 0, 0, 1, 1.0, 1.0,
-
-        0.5, -0.5, -0.5, 0, 0, -1, 0.0, 1.0,
-        0.5, 0.5, -0.5, 0, 0, -1, 0.0, 0.0,
-        -0.5, 0.5, -0.5, 0, 0, -1, 1.0, 0.0,
-        -0.5, -0.5, -0.5, 0, 0, -1, 1.0, 1.0,
-
-        0.5, -0.5, 0.5, 1, 0, 0, 0.0, 1.0,
-        0.5, 0.5, 0.5, 1, 0, 0, 0.0, 0.0,
-        0.5, 0.5, -0.5, 1, 0, 0, 1.0, 0.0,
-        0.5, -0.5, -0.5, 1, 0, 0, 1.0, 1.0,
-
-        -0.5, -0.5, -0.5, -1, 0, 0, 0.0, 1.0,
-        -0.5, 0.5, -0.5, -1, 0, 0, 0.0, 0.0,
-        -0.5, 0.5, 0.5, -1, 0, 0, 1.0, 0.0,
-        -0.5, -0.5, 0.5, -1, 0, 0, 1.0, 1.0,
-
-        -0.5, 0.5, 0.5, 0, 1, 0, 0.0, 1.0,
-        -0.5, 0.5, -0.5, 0, 1, 0, 0.0, 0.0,
-        0.5, 0.5, -0.5, 0, 1, 0, 1.0, 0.0,
-        0.5, 0.5, 0.5, 0, 1, 0, 1.0, 1.0,
-
-        -0.5, -0.5, -0.5, 0, -1, 0, 0.0, 1.0,
-        -0.5, -0.5, 0.5, 0, -1, 0, 0.0, 0.0,
-        0.5, -0.5, 0.5, 0, -1, 0, 1.0, 0.0,
-        0.5, -0.5, -0.5, 0, -1, 0, 1.0, 1.0,
-    ];
     indices = [
         0, 1, 2, 2, 3, 0,
         4, 5, 6, 6, 7, 4,
@@ -180,20 +142,55 @@ window.onload = function () {
     loadSkyboxFaceImage(SeaSkybox[4], 256, 256, "-y");
     loadSkyboxFaceImage(SeaSkybox[5], 256, 256, "+y");
 
+    var bottleMesh = createTexturedMesh(bottleData2[0],bottleData2[1]);
+    var strawMesh = createTexturedMesh(straw[0],straw[1])
 
-    asteroid1 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
-    asteroid2 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
-    asteroid3 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
-    asteroid4 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
-    asteroid5 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
-    asteroid6 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    if(Math.random() < 0.5){
+        asteroid1 =  bottleMesh;
+    }else{
+        asteroid1 = strawMesh;
+    }
+    if(Math.random() < 0.5){
+        asteroid2 =  bottleMesh;
+    }else{
+        asteroid2 = strawMesh;
+    }
+    if(Math.random() < 0.5){
+        asteroid3 =  bottleMesh;
+    }else{
+        asteroid3 = strawMesh;
+    }
+    if(Math.random() < 0.5){
+        asteroid4 =  bottleMesh;
+    }else{
+        asteroid4 = strawMesh;
+    }
+    if(Math.random() < 0.5){
+        asteroid5 = bottleMesh;
+    }else{
+        asteroid5 = strawMesh;
+    }
+    if(Math.random() < 0.5){
+        asteroid6 =  bottleMesh;
+    }else{
+        asteroid6 = strawMesh;
+    }
     asteroid7 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
     asteroid8 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
     asteroid9 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
 
     asteroids = [asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6];
 
-    speeds = [Math.random()*0,5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5];
+    // for(var i = 0; i < 6; i++){
+    //     console.log("test");
+    //     var e = bottleMesh;
+    //     asteroids.push(e);
+    // }
+
+
+    for(var i = 0; i < asteroids.length; i++){
+        speeds.push((Math.random()*0.5)+0.3);
+    }
   
     rocketMesh = createTexturedMesh(rocketData[0], rocketData[1]);
     rocketMesh.scale.scale(1);
@@ -284,36 +281,21 @@ function updateFrame() {
     for(i = 0; i < asteroids.length; i++){
     var fishyMesh = asteroids[i];
     if (fishyMesh.position.x <= -7) {
-        speeds[i] = Math.random()*0.5;
+        speeds[i] = (Math.random()*0.5)+0.3;
         // fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
         fishyMesh.position.x = 320 / (difficulty);
         fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
-        fishyMesh.position.z = (Math.random() - .5) * 16;
+        fishyMesh.position.z = ((Math.random() - 1)+0.5) * 16;
         fishyMesh.position.y = (Math.random() * 16)-10;
         console.log("" + fishyMesh.position.y);
     } else {
-        fishyMesh.position.x -= (.1 * difficulty);
-        if (difficulty < 3) {
-            difficulty += .001;
-        } else {
-            fishyMesh.position.y += (playerMesh.position.y - fishyMesh.position.y) * .01;
-            fishyMesh.position.z += (playerMesh.position.z - fishyMesh.position.z) * .01;
-        }
-
+        fishyMesh.position.x -= speeds[i];
     }
-    fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
 
     if (Vector3.length(Vector3.sub(fishyMesh.position, playerMesh.position)) < 1.2) {
         score = 0;
         difficulty = 1;
     }
-
-    if (fishyMesh.position.x <= -7) { //fishyMesh is asteroid mesh 
-        fishyMesh.position.x = 320;
-    } else {
-        fishyMesh.position.x -= speeds[i];
-    }
-    fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
     }
 
     camera.updateView(deltaTime);
@@ -439,7 +421,7 @@ function mouseMove(evt) {
     destZ = (((mouseX / canvas.width) * 8) - 4);
     destY = (((mouseY / canvas.height) * -8) + 6);
 }
-function mouseDown(evt) {
+function mouseDown() {
     rocketMeshes.push(new TexturedMesh(rocketMesh));
         rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
         rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,-.1),1);
@@ -453,7 +435,7 @@ function mouseDown(evt) {
         rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,0),1);
     console.log("down");
 }
-function mouseUp(evt) {
+function mouseUp() {
     speed = 0.1;
 
     console.log("up");
