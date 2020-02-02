@@ -306,6 +306,7 @@ function updateFrame() {
     if (Vector3.length(Vector3.sub(fishyMesh.position, playerMesh.position)) < 1.2) {
         score = 0;
         difficulty = 1;
+        isDead = true;
     }
 
     if (fishyMesh.position.x <= -7) { //fishyMesh is asteroid mesh 
