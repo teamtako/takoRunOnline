@@ -465,6 +465,7 @@ function keyDown(event) {
         case KEY_SPACE:
             mainMenu = !mainMenu;
             isDead = false;
+           score = false;
             for(i = 0; i < asteroids.length; i++){
                 asteroids[i].position.x = 20;
             }
