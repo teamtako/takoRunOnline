@@ -334,6 +334,11 @@ function mouseMove(evt) {
     destZ = (((mouseX / canvas.width) * 8) - 4);
     destY = (((mouseY / canvas.height) * -8) + 6);
 }
+function killNear() {
+    for(i = 0; i < asteroids.length; i++){
+        asteroids[i].position.x = 20;
+    }
+}
 function mouseDown(evt) {
     speed = 0.2;
 
