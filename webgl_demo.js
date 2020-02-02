@@ -295,6 +295,7 @@ function updateFrame() {
     if (Vector3.length(Vector3.sub(fishyMesh.position, playerMesh.position)) < 1.2) {
         score = 0;
         difficulty = 1;
+        isDead = true;
     }
     }
 
@@ -446,6 +447,7 @@ function keyDown(event) {
         case KEY_SPACE:
             mainMenu = !mainMenu;
             isDead = false;
+           score = false;
             for(i = 0; i < asteroids.length; i++){
                 asteroids[i].position.x = 20;
             }
