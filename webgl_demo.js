@@ -310,27 +310,23 @@ function updateFrame() {
 
 
 
+    
     for(i = 0; i < asteroids.length; i++){
-    var fishyMesh = asteroids[i];
-    if (fishyMesh.position.x <= -7) {
-        speeds[i] = Math.random()*0.5;
-        // fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
-        fishyMesh.position.x = 320 / (difficulty);
-        fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
-        fishyMesh.position.z = (Math.random() - .5) * 16;
-        fishyMesh.position.y = (Math.random() * 16)-10;
-        console.log("" + fishyMesh.position.y);
-    } else {
-        fishyMesh.position.x -= (.1 * difficulty);
-        if (difficulty < 3) {
-            difficulty += .001;
+        var fishyMesh = asteroids[i];
+        if (fishyMesh.position.x <= -7) {
+            speeds[i] = Math.random()*0.5;
+            // fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
+            fishyMesh.position.x = 320 / (difficulty);
+            fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
+            fishyMesh.position.z = (Math.random() - .5) * 16;
+            fishyMesh.position.y = (Math.random() * 16)-10;
+          
         } else {
-            fishyMesh.position.y += (playerMesh.position.y - fishyMesh.position.y) * .01;
-            fishyMesh.position.z += (playerMesh.position.z - fishyMesh.position.z) * .01;
+            fishyMesh.position.x -= (speeds[i] * difficulty);
+           
+    
         }
-
-    }
-    fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
+        fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
 
     if (Vector3.length(Vector3.sub(fishyMesh.position, playerMesh.position)) < 1.2) {
         score = 0;
