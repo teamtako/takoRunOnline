@@ -257,7 +257,7 @@ function moveTowardsNearestEnemy(object1, speed)
         if(element != null){
         xdist = Math.abs(object1.position.x - element.position.x);
         console.log(xdist);
-        if(xdist < 1)
+        if(xdist < .2)
         {
             sendToback(element); sendToback(object1);
         }
@@ -268,10 +268,10 @@ function moveTowardsNearestEnemy(object1, speed)
         }
     }
     var newMovement = Vector3.sub(nearE.position,object1.position);
-    object1.position.add(Vector3.scale(newMovement,(deltaTime * .5)));
+    object1.position.add(Vector3.scale(newMovement,(deltaTime * 1)));
         
     });
-
+}
 
 function updateFrame() {
     gl.clear(gl.COLOR_BUFFER_BIT);
@@ -287,17 +287,18 @@ function updateFrame() {
     //     playerMesh.position.y += mvmtSpeed;
     // }
 
-    distIntoArray = 0;
-    rocketMeshes.forEach(element => {
-        element.position.add(new Vector3(20 * deltaTime * ((element.orientation.x) / Math.PI),20 * deltaTime * ((element.orientation.y) / Math.PI),20 * deltaTime * ((element.orientation.z) / Math.PI)));
-       
-       if (element.position.x > 318)
+    for (let indexI = 0; indexI < rocketMeshes.length; indexI++) {
+        //console.log(rocketMeshes.length);
+       // console.log(rocketMeshes[indexI].position.x);
+        moveTowardsNearestEnemy(rocketMeshes[indexI], .04);
+       //rocketMeshes[indexI].position.add(new Vector3(20 * deltaTime * ((rocketMeshes[indexI].orientation.x) / Math.PI),20 * deltaTime * ((rocketMeshes[indexI].orientation.y) / Math.PI),20 * deltaTime * ((rocketMeshes[indexI].orientation.z) / Math.PI)));
+        if (rocketMeshes[indexI].position.x > 318)
         {
-          rocketMeshes.splice(distIntoArray,1);
+          rocketMeshes.splice(indexI,1);
           element = null;
         }
-        distIntoArray++;
-      });
+  
+    }
 
     // verticalVelocity -= gravity * deltaTime;
     // playerMesh.position.y += verticalVelocity;
@@ -332,13 +333,6 @@ function updateFrame() {
         score = 0;
         difficulty = 1;
     }
-
-    if (fishyMesh.position.x <= -7) { //fishyMesh is asteroid mesh 
-        fishyMesh.position.x = 320;
-    } else {
-        fishyMesh.position.x -= speeds[i];
-    }
-    fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
     }
 
     camera.updateView(deltaTime);
@@ -353,7 +347,7 @@ function updateFrame() {
     textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
     if (mainMenu) {
         textCtx.font = "100px Arial";
-        textCtx.fillText("Press Space to Start Epic Game", 150, 200);
+        textCtx.fillText("Press Space to Start Game", 150, 200);
         difficulty = 1;
     } else {
         if (isDead) {
@@ -390,6 +384,9 @@ function handleType(){
 }
 function removeChar(){
     if(words[wordAt].length==1){
+        rocketMeshes.push(new TexturedMesh(rocketMesh));
+        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
+        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,-.1),1);
         wordAt++;
         score++;
     }else{
@@ -435,9 +432,7 @@ function keyUp(event) {
             if (isDead == true) {
                 gl.clearColor(0.5, 0.7, 1.0, 1.0);
                 playerMesh.position.z = ((mouseX / canvas.width) * 2) + -1;
-                for(i = 0; i < asteroids.length; i++){
-                    asteroids[i].position.x = 22;
-                }
+
                 playerMesh.position.y = ((mouseY / canvas.height) * -2) + 3;
                 score = 0;
                 startTime = new Date().getTime();
@@ -457,17 +452,7 @@ function mouseMove(evt) {
     destY = (((mouseY / canvas.height) * -8) + 6);
 }
 function mouseDown(evt) {
-    rocketMeshes.push(new TexturedMesh(rocketMesh));
-        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
-        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,-.1),1);
-
-        rocketMeshes.push(new TexturedMesh(rocketMesh));
-        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
-        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,.1),1);
-
-        rocketMeshes.push(new TexturedMesh(rocketMesh));
-        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
-        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,0),1);
+   
     console.log("down");
 }
 function mouseUp(evt) {
@@ -482,7 +467,7 @@ function keyDown(event) {
             mainMenu = !mainMenu;
             isDead = false;
             for(i = 0; i < asteroids.length; i++){
-                asteroids[i].position.x = 20;
+                asteroids[i].position.x = 320;
             }
             break;
 
@@ -492,3 +477,4 @@ function keyDown(event) {
             
     }
 }
+
