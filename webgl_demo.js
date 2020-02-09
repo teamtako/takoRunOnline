@@ -249,7 +249,7 @@ function updateFrame() {
        // console.log(rocketMeshes[indexI].position.x);
         moveTowardsNearestEnemy(rocketMeshes[indexI], .04);
        //rocketMeshes[indexI].position.add(new Vector3(20 * deltaTime * ((rocketMeshes[indexI].orientation.x) / Math.PI),20 * deltaTime * ((rocketMeshes[indexI].orientation.y) / Math.PI),20 * deltaTime * ((rocketMeshes[indexI].orientation.z) / Math.PI)));
-        if (rocketMeshes[indexI].position.x > 60)
+        if (rocketMeshes[indexI].position.x > 318)
         {
           rocketMeshes.splice(indexI,1);
           element = null;
@@ -329,25 +329,37 @@ function updateFrame() {
 
 }
 
+function sendToback(asteroidIN)
+{
+    asteroidIN.position.x = 320;
+}
+
 function moveTowardsNearestEnemy(object1, speed)
 {
     console.log(object1.position.x);
     var nearE = asteroid1;
     var closest = 999;
+    var xdist;
     asteroids.forEach(element => {
         if(element != null){
-        var xdist = Math.abs(element.position.x) - Math.abs(object1.position.x);
-    
+        xdist = Math.abs(object1.position.x - element.position.x);
+        console.log(xdist);
+        if(xdist < 1)
+        {
+            sendToback(element); sendToback(object1);
+        }
         if( xdist < closest)
         {
             closest = xdist;
             nearE = element;   
         }
     }
-   
+    var newMovement = Vector3.sub(nearE.position,object1.position);
+    object1.position.add(Vector3.scale(newMovement,(deltaTime * .5)));
         
     });
-    var newMovement = new Vector3();
+    /*
+    
  
         newMovement.x = 1 * speed;
    
@@ -362,8 +374,8 @@ function moveTowardsNearestEnemy(object1, speed)
         newMovement.z = -.5 * speed;
     } else {
         newMovement.z = .5 * speed;
-    }
-    object1.position.add(newMovement);
+    } */
+   
 
 }
 
@@ -389,7 +401,6 @@ function keyUp(event) {
             isDead = false;
             console.log("respawned")
         }
-
     }
 }
 
