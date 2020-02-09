@@ -241,6 +241,38 @@ function checkIntersection(m1, m2) {
     }
 }
 
+
+function sendToback(asteroidIN)
+{
+    asteroidIN.position.x = 320;
+}
+
+function moveTowardsNearestEnemy(object1, speed)
+{
+    console.log(object1.position.x);
+    var nearE = asteroid1;
+    var closest = 999;
+    var xdist;
+    asteroids.forEach(element => {
+        if(element != null){
+        xdist = Math.abs(object1.position.x - element.position.x);
+        console.log(xdist);
+        if(xdist < 1)
+        {
+            sendToback(element); sendToback(object1);
+        }
+        if( xdist < closest)
+        {
+            closest = xdist;
+            nearE = element;   
+        }
+    }
+    var newMovement = Vector3.sub(nearE.position,object1.position);
+    object1.position.add(Vector3.scale(newMovement,(deltaTime * .5)));
+        
+    });
+
+
 function updateFrame() {
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.clear(gl.DEPTH_BUFFER_BIT);
@@ -259,7 +291,7 @@ function updateFrame() {
     rocketMeshes.forEach(element => {
         element.position.add(new Vector3(20 * deltaTime * ((element.orientation.x) / Math.PI),20 * deltaTime * ((element.orientation.y) / Math.PI),20 * deltaTime * ((element.orientation.z) / Math.PI)));
        
-       if (element.position.x > 60)
+       if (element.position.x > 318)
         {
           rocketMeshes.splice(distIntoArray,1);
           element = null;
