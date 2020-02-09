@@ -193,7 +193,7 @@ window.onload = function () {
 
     asteroids = [asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6];
 
-    speeds = [Math.random()*0,5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5];
+    speeds = [Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5];
   
     rocketMesh = createTexturedMesh(rocketData[0], rocketData[1]);
     rocketMesh.scale.scale(1);
@@ -293,8 +293,8 @@ function updateFrame() {
         if (difficulty < 3) {
             difficulty += .001;
         } else {
-            fishyMesh.position.y += (playerMesh.position.y - fishyMesh.position.y) * .01;
-            fishyMesh.position.z += (playerMesh.position.z - fishyMesh.position.z) * .01;
+            // fishyMesh.position.y += (playerMesh.position.y - fishyMesh.position.y) * .01;
+            // fishyMesh.position.z += (playerMesh.position.z - fishyMesh.position.z) * .01;
         }
 
     }
@@ -337,10 +337,30 @@ function updateFrame() {
             textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
 
             textCtx.fillStyle = color;
-            textCtx.font = "300px Arial";
+            textCtx.font = "30px Arial";
             
-           
-            textCtx.fillText(getWord()+"", 200, 500);
+            var closestTrash = asteroids[0];
+
+            for(j = 0; j < asteroids.length; j++){
+                if(closestTrash.position.x > asteroids[j].position.x){
+                    closestTrash = asteroids[j];
+                }                
+            }
+
+            // console.log(closestTrash.position.z + " " + closestTrash.position.y);
+            textCtx.fillStyle = "#000000";
+            textCtx.fillRect(window.innerWidth/2-10-(getWord().length*10), 30, getWord().length*21, 50);
+            textCtx.strokeStyle = "#ffffff";
+            textCtx.beginPath();
+            textCtx.lineWidth = "5";
+            textCtx.rect(window.innerWidth/2-10-(getWord().length*10), 30, getWord().length*21, 50);
+            textCtx.stroke();
+            textCtx.fillStyle = "#ffffff";
+            if(getWord().length<=1){
+                textCtx.fillText(getWord()+"", window.innerWidth/2-(getWord().length*10)-7, 65);
+            }else{
+                textCtx.fillText(getWord()+"", window.innerWidth/2-(getWord().length*10), 65);
+            }
             textCtx.font = "30px Arial";
             textCtx.fillText("Score: " + score, 100, 100);
             
