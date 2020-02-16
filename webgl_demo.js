@@ -204,6 +204,7 @@ function checkIntersection(m1, m2) {
 }
 
 function updateFrame() {
+    difficulty = 0.5; 
     if(paused){
         
         textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);

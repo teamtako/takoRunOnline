@@ -341,6 +341,135 @@ class Matrix4 {
         ];
     }
 
+     static invertMatrix(m, out){
+        var inv, det;
+        var i;
+    
+        inv[0] = m[5]  * m[10] * m[15] - 
+                 m[5]  * m[11] * m[14] - 
+                 m[9]  * m[6]  * m[15] + 
+                 m[9]  * m[7]  * m[14] +
+                 m[13] * m[6]  * m[11] - 
+                 m[13] * m[7]  * m[10];
+    
+        inv[4] = -m[4]  * m[10] * m[15] + 
+                  m[4]  * m[11] * m[14] + 
+                  m[8]  * m[6]  * m[15] - 
+                  m[8]  * m[7]  * m[14] - 
+                  m[12] * m[6]  * m[11] + 
+                  m[12] * m[7]  * m[10];
+    
+        inv[8] = m[4]  * m[9] * m[15] - 
+                 m[4]  * m[11] * m[13] - 
+                 m[8]  * m[5] * m[15] + 
+                 m[8]  * m[7] * m[13] + 
+                 m[12] * m[5] * m[11] - 
+                 m[12] * m[7] * m[9];
+    
+        inv[12] = -m[4]  * m[9] * m[14] + 
+                   m[4]  * m[10] * m[13] +
+                   m[8]  * m[5] * m[14] - 
+                   m[8]  * m[6] * m[13] - 
+                   m[12] * m[5] * m[10] + 
+                   m[12] * m[6] * m[9];
+    
+        inv[1] = -m[1]  * m[10] * m[15] + 
+                  m[1]  * m[11] * m[14] + 
+                  m[9]  * m[2] * m[15] - 
+                  m[9]  * m[3] * m[14] - 
+                  m[13] * m[2] * m[11] + 
+                  m[13] * m[3] * m[10];
+    
+        inv[5] = m[0]  * m[10] * m[15] - 
+                 m[0]  * m[11] * m[14] - 
+                 m[8]  * m[2] * m[15] + 
+                 m[8]  * m[3] * m[14] + 
+                 m[12] * m[2] * m[11] - 
+                 m[12] * m[3] * m[10];
+    
+        inv[9] = -m[0]  * m[9] * m[15] + 
+                  m[0]  * m[11] * m[13] + 
+                  m[8]  * m[1] * m[15] - 
+                  m[8]  * m[3] * m[13] - 
+                  m[12] * m[1] * m[11] + 
+                  m[12] * m[3] * m[9];
+    
+        inv[13] = m[0]  * m[9] * m[14] - 
+                  m[0]  * m[10] * m[13] - 
+                  m[8]  * m[1] * m[14] + 
+                  m[8]  * m[2] * m[13] + 
+                  m[12] * m[1] * m[10] - 
+                  m[12] * m[2] * m[9];
+    
+        inv[2] = m[1]  * m[6] * m[15] - 
+                 m[1]  * m[7] * m[14] - 
+                 m[5]  * m[2] * m[15] + 
+                 m[5]  * m[3] * m[14] + 
+                 m[13] * m[2] * m[7] - 
+                 m[13] * m[3] * m[6];
+    
+        inv[6] = -m[0]  * m[6] * m[15] + 
+                  m[0]  * m[7] * m[14] + 
+                  m[4]  * m[2] * m[15] - 
+                  m[4]  * m[3] * m[14] - 
+                  m[12] * m[2] * m[7] + 
+                  m[12] * m[3] * m[6];
+    
+        inv[10] = m[0]  * m[5] * m[15] - 
+                  m[0]  * m[7] * m[13] - 
+                  m[4]  * m[1] * m[15] + 
+                  m[4]  * m[3] * m[13] + 
+                  m[12] * m[1] * m[7] - 
+                  m[12] * m[3] * m[5];
+    
+        inv[14] = -m[0]  * m[5] * m[14] + 
+                   m[0]  * m[6] * m[13] + 
+                   m[4]  * m[1] * m[14] - 
+                   m[4]  * m[2] * m[13] - 
+                   m[12] * m[1] * m[6] + 
+                   m[12] * m[2] * m[5];
+    
+        inv[3] = -m[1] * m[6] * m[11] + 
+                  m[1] * m[7] * m[10] + 
+                  m[5] * m[2] * m[11] - 
+                  m[5] * m[3] * m[10] - 
+                  m[9] * m[2] * m[7] + 
+                  m[9] * m[3] * m[6];
+    
+        inv[7] = m[0] * m[6] * m[11] - 
+                 m[0] * m[7] * m[10] - 
+                 m[4] * m[2] * m[11] + 
+                 m[4] * m[3] * m[10] + 
+                 m[8] * m[2] * m[7] - 
+                 m[8] * m[3] * m[6];
+    
+        inv[11] = -m[0] * m[5] * m[11] + 
+                   m[0] * m[7] * m[9] + 
+                   m[4] * m[1] * m[11] - 
+                   m[4] * m[3] * m[9] - 
+                   m[8] * m[1] * m[7] + 
+                   m[8] * m[3] * m[5];
+    
+        inv[15] = m[0] * m[5] * m[10] - 
+                  m[0] * m[6] * m[9] - 
+                  m[4] * m[1] * m[10] + 
+                  m[4] * m[2] * m[9] + 
+                  m[8] * m[1] * m[6] - 
+                  m[8] * m[2] * m[5];
+    
+        det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
+    
+        if (det == 0)
+            return false;
+    
+        det = 1.0 / det;
+    
+        for (i = 0; i < 16; i++)
+            invOut[i] = inv[i] * det;
+    
+        return true;
+    }
+
     static multiply(m1, m2){
         let mres = new Matrix4();
         mres.m[0] =  ((m1.m[0] * m2.m[0]) +  (m1.m[4] * m2.m[1]) +  (m1.m[8] *  m2.m[2]) +  (m1.m[12] * m2.m[3]));
@@ -364,10 +493,11 @@ class Matrix4 {
 
     static buildModelMatrix4(position, scale, orientation){
         let m = orientation.toMatrix4();
-        m.translate(position);
-        m.scale(scale);
+        let m2 = new Matrix4(1);
+        m2.translate(position);
+        m2.scale(scale);
         
-        return m;
+        return Matrix4.multiply(m2,m);
     }
 
     static fromArray(arr){
@@ -376,6 +506,17 @@ class Matrix4 {
             m.setMatrixArray(arr);
             return m;
         }
+    }
+
+    toQuaternion(){
+        let q = new Quaternion();
+
+        q.w = Math.sqrt(1 + this.m[0] + this.m[5] + this.m[10]) / 2;
+        q.x = (this.m[6] - this.m[9]) / ( 4 * q.w)
+        q.y = (this.m[89] - this.m[2]) / ( 4 * q.w)
+        q.z = (this.m[1] - this.m[4]) / ( 4 * q.w)
+
+        return q;
     }
 
     setIdentity(){
@@ -565,6 +706,7 @@ class Camera {
         this.viewMatrix.getUpVector(this.up);
         this.viewMatrix.getRightVector(this.right);
         this.viewMatrix = Matrix4.multiply(this.projectionMatrix, this.viewMatrix);
+        this.orientation = this.viewMatrix.toQuaternion();
     }
 }
 
@@ -647,7 +789,7 @@ function getSurfaceNormal(v1, v2, v3){
     return vc;
 }
 
-function generateUnitCubeVerticesIndexedWithNormals(verts, inds){
+function generateUnitCubeVerticesIndexedWithNormals(verts, inds){ //generates unit cube vertices indexed with normals
     verts.push(-0.5); verts.push(-0.5); verts.push(-0.5);
     verts.push(0); verts.push(0); verts.push(-1);
     verts.push(-0.5); verts.push(0.5); verts.push(-0.5);
@@ -710,7 +852,7 @@ function generateUnitCubeVerticesIndexedWithNormals(verts, inds){
     inds.push(20); inds.push(21); inds.push(22); inds.push(22); inds.push(23); inds.push(20);
 }
 
-function generateUnitCubeVerticesIndexedWithNormalsTexCoords(verts, inds){
+function generateUnitCubeVerticesIndexedWithNormalsTexCoords(verts, inds){ // generates unit cube vertices with normals, indices, and texture coordinates 
     verts.push(-0.5); verts.push(-0.5); verts.push(-0.5);
     verts.push(0); verts.push(0); verts.push(-1);
     verts.push(0); verts.push(1);
@@ -797,7 +939,7 @@ function generateUnitCubeVerticesIndexedWithNormalsTexCoords(verts, inds){
     inds.push(20); inds.push(21); inds.push(22); inds.push(22); inds.push(23); inds.push(20);
 }
 
-function generateIcoSphereVerticesIndexedWithNormals(verts, inds, divisions = 0){
+function generateIcoSphereVerticesIndexedWithNormals(verts, inds, divisions = 0){ // generates icosphere vertices with indices and normals
     if(divisions > 5){
         divisions = 5;
     }
@@ -881,7 +1023,7 @@ function generateIcoSphereVerticesIndexedWithNormals(verts, inds, divisions = 0)
     addTri(verts, inds, 9, 8, 6, divisions);
 }
 
-function generateIcoSphereVerticesIndexedWithNormalsTexCoords(verts, inds, divisions = 0){
+function generateIcoSphereVerticesIndexedWithNormalsTexCoords(verts, inds, divisions = 0){ // generates icosphere vercies with indices, normals, and texture coordinates
     if(divisions > 5){
         divisions = 5;
     }
@@ -966,7 +1108,7 @@ function generateIcoSphereVerticesIndexedWithNormalsTexCoords(verts, inds, divis
     addTri(verts, inds, 9, 8, 6, divisions);
 }
 
-function generateUnitCylinderIndexedWithNormalsTexCoords(verts, inds, divisions = 16){
+function generateUnitCylinderIndexedWithNormalsTexCoords(verts, inds, divisions = 16){ // generates unit cylinder with indicies and texture coordinates
     if(divisions < 3) divisions = 3;
     function addVertex(v, n, t){
         if(typeof addVertex.counter == 'undefined'){
@@ -1062,7 +1204,7 @@ function generateUnitCylinderIndexedWithNormalsTexCoords(verts, inds, divisions 
     }
 }
 
-function generateUnitPlaneIndexedWithNormalsTexCoords(verts, inds){
+function generateUnitPlaneIndexedWithNormalsTexCoords(verts, inds){ // generates unit plane with indicies, normals, and texture coordinates
     verts.push(-0.5); verts.push(0); verts.push(-0.5);
     verts.push(0.0); verts.push(1.0); verts.push(0.0);
     verts.push(0); verts.push(1);
