@@ -181,7 +181,7 @@ window.onload = function () {
     loadSkyboxFaceImage(SeaSkybox[5], 256, 256, "+y");
 
 
-    asteroid1 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    //asteroid1 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
     asteroid2 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
     asteroid3 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
     asteroid4 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
@@ -191,7 +191,7 @@ window.onload = function () {
     asteroid8 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
     asteroid9 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
 
-    asteroids = [asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6];
+    asteroids = [asteroid9, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6];
 
     speeds = [Math.random()*0,5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5];
   
@@ -226,21 +226,6 @@ window.onload = function () {
 
 }
 
-function checkIntersection(m1, m2) {
-    dist = Vector3.sub(m1.position, m2.position);
-    if (Vector3.length(dist) < 1) {
-        m1.verts
-        gl.clearColor(1, 0, 0, 1);
-        //isDead = true;
-        score+=1;
-        console.log("should Be dead");
-
-    } else {
-        gl.clearColor(0.5, 0.7, 1.0, 1.0);
-
-    }
-}
-
 
 function sendToback(asteroidIN)
 {
@@ -268,7 +253,7 @@ function moveTowardsNearestEnemy(object1, speed)
         }
     }
     var newMovement = Vector3.sub(nearE.position,object1.position);
-    object1.position.add(Vector3.scale(newMovement,(deltaTime * 1)));
+    object1.position.add(Vector3.scale(newMovement,(deltaTime * .1)));
         
     });
 }
@@ -366,7 +351,6 @@ function updateFrame() {
             textCtx.font = "30px Arial";
             textCtx.fillText("Score: " + score, 100, 100);
             
-            checkIntersection(fishyMesh, playerMesh);
         }
     }
     endTime = new Date().getTime();
