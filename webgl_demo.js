@@ -18,19 +18,21 @@ var gl;
 var light;
 var camera;
 
+var states = {
+    TITLE: 0,
+    GAME: 1, 
+    GAME_OVER: 2,
+    PAUSE: 3
+}
+
+var currentState = states.TITLE;
+
 var playerMesh;
 var meshes = [];
 var asteroids = [];
 var speeds = [];
 var rocketMesh;
 var rocketMeshes = [];
-
-var asteroid1;
-var asteroid2;
-var asteroid3;
-var asteroid4;
-var asteroid5;
-var asteroid6;
 
 var asteroid1;
 var asteroid2;
@@ -54,9 +56,7 @@ var mouseY;
 
 var mvmtSpeed = 0.01;
 
-var isDead = false;
 var score = 0;
-var mainMenu = true;
 
 var difficulty;
 
@@ -231,7 +231,7 @@ function checkIntersection(m1, m2) {
     if (Vector3.length(dist) < 1) {
         m1.verts
         gl.clearColor(1, 0, 0, 1);
-        //isDead = true;
+        currentState = states.GAME_OVER;
         score+=1;
         console.log("should Be dead");
 
@@ -241,20 +241,99 @@ function checkIntersection(m1, m2) {
     }
 }
 
-function updateFrame() {
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.clear(gl.DEPTH_BUFFER_BIT);
-    // if (playerMesh.position.z > destZ) {  //playerMesh is missile mesh
-    //     playerMesh.position.z -= mvmtSpeed;
-    // } else if (playerMesh.position.z < destZ) {
-    //     playerMesh.position.z += mvmtSpeed;
-    // }
-    // if (playerMesh.position.y > destY) {
-    //     playerMesh.position.y -= mvmtSpeed;
-    // } else if (playerMesh.position.y < destY) {
-    //     playerMesh.position.y += mvmtSpeed;
-    // }
+//start type
 
+//initiates texts and the words in them into arrays
+function handleType(){
+     
+     words = lvl1.split(" ");
+
+}
+function removeChar(){
+    if(words[wordAt].length==1){
+        wordAt++;
+        score++;
+    }else{
+        words[wordAt]= words[wordAt].substring(1, words[wordAt].length);;
+    }
+}
+//when a key is typed checks if it is the correct next letter and if there is no word selected pickes a word with the correct first char
+function validType(code){
+    if(code==getKeyCode(words[wordAt].charAt(0))){
+        color="white";
+        removeChar();
+        activeWords[i]=activeWord;
+        wordDone=false;
+       }else{
+        color="red";
+        
+    }
+}
+
+
+//get next word for the astriod when it spawns
+function getWord(){
+var word=words[wordAt];
+return word.toString();
+}
+function getKeyCode(char) {
+    var keyCode = char.charCodeAt(0);
+    if(keyCode > 90) {  // 90 is keyCode for 'z'
+      return keyCode - 32;
+    }
+    return keyCode;
+  }
+
+  //end type
+
+function mouseMove(evt) {
+    mouseX = evt.x;
+    mouseY = evt.y;
+    destZ = (((mouseX / canvas.width) * 8) - 4);
+    destY = (((mouseY / canvas.height) * -8) + 6);
+}
+function mouseDown(evt) {
+    rocketMeshes.push(new TexturedMesh(rocketMesh));
+        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
+        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,-.1),1);
+
+        rocketMeshes.push(new TexturedMesh(rocketMesh));
+        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
+        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,.1),1);
+
+        rocketMeshes.push(new TexturedMesh(rocketMesh));
+        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
+        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,0),1);
+    console.log("down");
+}
+function mouseUp(evt) {
+    speed = 0.1;
+
+    console.log("up");
+}
+var an = true;
+function keyDown(event) {
+    switch (event.keyCode) {
+        case KEY_SPACE:
+            if(currentState == states.TITLE){
+               currentState = states.GAME;
+            }
+            for(i = 0; i < asteroids.length; i++){
+                asteroids[i].position.x = 20;
+            }
+            break;
+
+        default:
+           // removeChar();
+            validType(event.keyCode);
+            
+    }
+
+    
+
+}
+
+function gameState(){
     distIntoArray = 0;
     rocketMeshes.forEach(element => {
         element.position.add(new Vector3(20 * deltaTime * ((element.orientation.x) / Math.PI),20 * deltaTime * ((element.orientation.y) / Math.PI),20 * deltaTime * ((element.orientation.z) / Math.PI)));
@@ -266,17 +345,6 @@ function updateFrame() {
         }
         distIntoArray++;
       });
-
-    // verticalVelocity -= gravity * deltaTime;
-    // playerMesh.position.y += verticalVelocity;
-    // if(playerMesh.position.y < 0){
-    //     playerMesh.position.y = 0;
-    //     jumping = false;
-    // }
-
-
-
-
 
     for(i = 0; i < asteroids.length; i++){
     var fishyMesh = asteroids[i];
@@ -323,99 +391,77 @@ function updateFrame() {
     textCtx.fillStyle = "white";
 
     textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
-    if (mainMenu) {
-        textCtx.font = "100px Arial";
-        textCtx.fillText("Press Space to Start Epic Game", 150, 200);
-        difficulty = 1;
-    } else {
-        if (isDead) {
-            textCtx.font = "100px Arial";
-            textCtx.fillText("You're Dead! Press S to restart", 170, 200);
-            clearInterval(stopvar);
-            difficulty = 1;
-        } else {
-            textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
+    
+    textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
 
-            textCtx.fillStyle = color;
-            textCtx.font = "30px Arial";
-            
-            var closestTrash = asteroids[0];
+    textCtx.fillStyle = color;
+    textCtx.font = "30px Arial";
+    
+    var closestTrash = asteroids[0];
 
-            for(j = 0; j < asteroids.length; j++){
-                if(closestTrash.position.x > asteroids[j].position.x){
-                    closestTrash = asteroids[j];
-                }                
-            }
-
-            // console.log(closestTrash.position.z + " " + closestTrash.position.y);
-            textCtx.fillStyle = "#000000";
-            textCtx.fillRect(window.innerWidth/2-10-(getWord().length*10), 30, getWord().length*21, 50);
-            textCtx.strokeStyle = "#ffffff";
-            textCtx.beginPath();
-            textCtx.lineWidth = "5";
-            textCtx.rect(window.innerWidth/2-10-(getWord().length*10), 30, getWord().length*21, 50);
-            textCtx.stroke();
-            textCtx.fillStyle = "#ffffff";
-            if(getWord().length<=1){
-                textCtx.fillText(getWord()+"", window.innerWidth/2-(getWord().length*10)-7, 65);
-            }else{
-                textCtx.fillText(getWord()+"", window.innerWidth/2-(getWord().length*10), 65);
-            }
-            textCtx.font = "30px Arial";
-            textCtx.fillText("Score: " + score, 100, 100);
-            
-            checkIntersection(fishyMesh, playerMesh);
-        }
+    for(j = 0; j < asteroids.length; j++){
+        if(closestTrash.position.x > asteroids[j].position.x){
+            closestTrash = asteroids[j];
+        }                
     }
+
+    // console.log(closestTrash.position.z + " " + closestTrash.position.y);
+    textCtx.fillStyle = "#000000";
+    textCtx.fillRect(window.innerWidth/2-10-(getWord().length*10), 30, getWord().length*21, 50);
+    textCtx.strokeStyle = "#ffffff";
+    textCtx.beginPath();
+    textCtx.lineWidth = "5";
+    textCtx.rect(window.innerWidth/2-10-(getWord().length*10), 30, getWord().length*21, 50);
+    textCtx.stroke();
+    textCtx.fillStyle = "#ffffff";
+    if(getWord().length<=1){
+        textCtx.fillText(getWord()+"", window.innerWidth/2-(getWord().length*10)-7, 65);
+    }else{
+        textCtx.fillText(getWord()+"", window.innerWidth/2-(getWord().length*10), 65);
+    }
+    textCtx.font = "30px Arial";
+    textCtx.fillText("Score: " + score, 100, 100);
+    
+    checkIntersection(fishyMesh, playerMesh);
+    
     endTime = new Date().getTime();
     deltaTime = (endTime - startTime) / 1000.0;
     startTime = endTime;
 
 }
-//start type
 
-//initiates texts and the words in them into arrays
-function handleType(){
-     
-     words = lvl1.split(" ");
+function gameOverState(){
+    textCtx.font = "100px Arial";
+    textCtx.fillText("You're Dead! Press S to restart", 170, 200);
+    clearInterval(stopvar);
+    difficulty = 1;
+}
+
+function titleState(){
+    textCtx.font = "100px Arial";
+    textCtx.fillText("Press Space to Start Epic Game", 150, 200);
+    difficulty = 1;
+}
+
+function pauseState(){
 
 }
-function removeChar(){
-    if(words[wordAt].length==1){
-        wordAt++;
-        score++;
-    }else{
-        words[wordAt]= words[wordAt].substring(1, words[wordAt].length);;
+
+function updateFrame() {
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.clear(gl.DEPTH_BUFFER_BIT);
+
+    if(currentState == states.GAME){
+        gameState();
+    } else if(currentState == states.GAME_OVER){
+        gameOverState();
+    } else if(currentState == states.TITLE){
+        titleState();
+    } else if(currentState == states.PAUSE){
+        pauseState();
     }
-}
-//when a key is typed checks if it is the correct next letter and if there is no word selected pickes a word with the correct first char
-function validType(code){
-    if(code==getKeyCode(words[wordAt].charAt(0))){
-        color="white";
-        removeChar();
-        activeWords[i]=activeWord;
-        wordDone=false;
-       }else{
-        color="red";
-        
-    }
-}
 
-
-//get next word for the astriod when it spawns
-function getWord(){
-var word=words[wordAt];
-return word.toString();
 }
-function getKeyCode(char) {
-    var keyCode = char.charCodeAt(0);
-    if(keyCode > 90) {  // 90 is keyCode for 'z'
-      return keyCode - 32;
-    }
-    return keyCode;
-  }
-
-  //end type
 
 function keyUp(event) {
     console.log(camera.position);
@@ -424,7 +470,7 @@ function keyUp(event) {
     switch (event.keyCode) {
         case KEY_S: {
             console.log("press works");
-            if (isDead == true) {
+            if (currentState == states.GAME_OVER) {
                 gl.clearColor(0.5, 0.7, 1.0, 1.0);
                 playerMesh.position.z = ((mouseX / canvas.width) * 2) + -1;
                 for(i = 0; i < asteroids.length; i++){
@@ -435,52 +481,9 @@ function keyUp(event) {
                 startTime = new Date().getTime();
                 stopvar = setInterval(updateFrame, 1);
             }
-            isDead = false;
+            currentState = states.TITLE;
             console.log("respawned")
         }
 
-    }
-}
-
-function mouseMove(evt) {
-    mouseX = evt.x;
-    mouseY = evt.y;
-    destZ = (((mouseX / canvas.width) * 8) - 4);
-    destY = (((mouseY / canvas.height) * -8) + 6);
-}
-function mouseDown(evt) {
-    rocketMeshes.push(new TexturedMesh(rocketMesh));
-        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
-        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,-.1),1);
-
-        rocketMeshes.push(new TexturedMesh(rocketMesh));
-        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
-        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,.1),1);
-
-        rocketMeshes.push(new TexturedMesh(rocketMesh));
-        rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
-        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,0),1);
-    console.log("down");
-}
-function mouseUp(evt) {
-    speed = 0.1;
-
-    console.log("up");
-}
-var an = true;
-function keyDown(event) {
-    switch (event.keyCode) {
-        case KEY_SPACE:
-            mainMenu = !mainMenu;
-            isDead = false;
-            for(i = 0; i < asteroids.length; i++){
-                asteroids[i].position.x = 20;
-            }
-            break;
-
-        default:
-           // removeChar();
-            validType(event.keyCode);
-            
     }
 }
