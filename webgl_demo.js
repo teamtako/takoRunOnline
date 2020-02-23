@@ -56,9 +56,7 @@ var mouseY;
 
 var mvmtSpeed = 0.01;
 
-var score = 0;
-
-var difficulty;
+var score = 5;
 
 var speed = 0.1;
 var destZ = 0;
@@ -105,8 +103,11 @@ const KEY_DOWN = 40;
 const KEY_LEFT = 37;
 const KEY_RIGHT = 39;
 const KEY_SPACE = 32;
+var logo;
 
 window.onload = function () {
+    logo = document.getElementById("logoImageID");
+
     window.addEventListener("keyup", keyUp);
     window.addEventListener("keydown", keyDown);
     window.addEventListener("mousemove", mouseMove);
@@ -180,20 +181,11 @@ window.onload = function () {
     loadSkyboxFaceImage(SeaSkybox[4], 256, 256, "-y");
     loadSkyboxFaceImage(SeaSkybox[5], 256, 256, "+y");
 
-
     asteroid1 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
-    asteroid2 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
-    asteroid3 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
-    asteroid4 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
-    asteroid5 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
-    asteroid6 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
-    asteroid7 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
-    asteroid8 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
-    asteroid9 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
 
-    asteroids = [asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6];
+    asteroids = [asteroid1];
 
-    speeds = [Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5,Math.random()*0.5];
+    speeds = [Math.random()*0.01];
   
     rocketMesh = createTexturedMesh(rocketData[0], rocketData[1]);
     rocketMesh.scale.scale(1);
@@ -219,26 +211,9 @@ window.onload = function () {
 
     startTime = new Date().getTime();
 
-
-    difficulty = 1;
     setInterval(updateFrame, 1);
     stopvar = setInterval(updateFrame, 1);
 
-}
-
-function checkIntersection(m1, m2) {
-    dist = Vector3.sub(m1.position, m2.position);
-    if (Vector3.length(dist) < 1) {
-        m1.verts
-        gl.clearColor(1, 0, 0, 1);
-        currentState = states.GAME_OVER;
-        score+=1;
-        console.log("should Be dead");
-
-    } else {
-        gl.clearColor(0.5, 0.7, 1.0, 1.0);
-
-    }
 }
 
 //start type
@@ -253,6 +228,10 @@ function removeChar(){
     if(words[wordAt].length==1){
         wordAt++;
         score++;
+        speeds[0] = 0.01;
+        asteroid1.position.x = 120;
+        fishyMesh.position.z = (Math.random() - .5) * 16;
+        fishyMesh.position.y = (Math.random() * 16)-10;
     }else{
         words[wordAt]= words[wordAt].substring(1, words[wordAt].length);;
     }
@@ -266,7 +245,6 @@ function validType(code){
         wordDone=false;
        }else{
         color="red";
-        
     }
 }
 
@@ -316,10 +294,11 @@ function keyDown(event) {
     switch (event.keyCode) {
         case KEY_SPACE:
             if(currentState == states.TITLE){
-               currentState = states.GAME;
+                currentState = states.GAME;
             }
             for(i = 0; i < asteroids.length; i++){
-                asteroids[i].position.x = 20;
+                asteroids[i].position.x = 120;
+                
             }
             break;
 
@@ -349,35 +328,17 @@ function gameState(){
     for(i = 0; i < asteroids.length; i++){
     var fishyMesh = asteroids[i];
     if (fishyMesh.position.x <= -7) {
-        speeds[i] = Math.random()*0.5;
+        score--;
         // fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
-        fishyMesh.position.x = 320 / (difficulty);
+        fishyMesh.position.x = 120;
         fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
         fishyMesh.position.z = (Math.random() - .5) * 16;
         fishyMesh.position.y = (Math.random() * 16)-10;
         console.log("" + fishyMesh.position.y);
     } else {
-        fishyMesh.position.x -= (.1 * difficulty);
-        if (difficulty < 3) {
-            difficulty += .001;
-        } else {
-            // fishyMesh.position.y += (playerMesh.position.y - fishyMesh.position.y) * .01;
-            // fishyMesh.position.z += (playerMesh.position.z - fishyMesh.position.z) * .01;
-        }
-
-    }
-    fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
-
-    if (Vector3.length(Vector3.sub(fishyMesh.position, playerMesh.position)) < 1.2) {
-        score = 0;
-        difficulty = 1;
+        fishyMesh.position.x -= 0.1 + ((score-5)/100);
     }
 
-    if (fishyMesh.position.x <= -7) { //fishyMesh is asteroid mesh 
-        fishyMesh.position.x = 320;
-    } else {
-        fishyMesh.position.x -= speeds[i];
-    }
     fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
     }
 
@@ -389,8 +350,6 @@ function gameState(){
 
     textCtx.font = "30px Arial";
     textCtx.fillStyle = "white";
-
-    textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
     
     textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
 
@@ -431,16 +390,22 @@ function gameState(){
 }
 
 function gameOverState(){
+    gl.clearColor(1.0,0.0,0.0,1.0);
+    textCtx.fillStyle = "white";
+    textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
     textCtx.font = "100px Arial";
     textCtx.fillText("You're Dead! Press S to restart", 170, 200);
     clearInterval(stopvar);
-    difficulty = 1;
+    score = 5;
 }
 
 function titleState(){
+    gl.clearColor(0.5, 0.7, 1.0, 1.0);
+    textCtx.fillStyle = "white";
+    textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
+    textCtx.drawImage(logo, (canvas.width-(canvas.width*0.5))/2, 0, canvas.width*0.5, (canvas.width*0.5)/2.2623771);
     textCtx.font = "100px Arial";
     textCtx.fillText("Press Space to Start Epic Game", 150, 200);
-    difficulty = 1;
 }
 
 function pauseState(){
@@ -450,6 +415,10 @@ function pauseState(){
 function updateFrame() {
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.clear(gl.DEPTH_BUFFER_BIT);
+
+    if(score <= 0){
+        currentState = states.GAME_OVER;
+    }
 
     if(currentState == states.GAME){
         gameState();
@@ -471,17 +440,9 @@ function keyUp(event) {
         case KEY_S: {
             console.log("press works");
             if (currentState == states.GAME_OVER) {
-                gl.clearColor(0.5, 0.7, 1.0, 1.0);
-                playerMesh.position.z = ((mouseX / canvas.width) * 2) + -1;
-                for(i = 0; i < asteroids.length; i++){
-                    asteroids[i].position.x = 22;
-                }
-                playerMesh.position.y = ((mouseY / canvas.height) * -2) + 3;
-                score = 0;
-                startTime = new Date().getTime();
-                stopvar = setInterval(updateFrame, 1);
+                score = 5;
+                currentState = states.TITLE;
             }
-            currentState = states.TITLE;
             console.log("respawned")
         }
 
