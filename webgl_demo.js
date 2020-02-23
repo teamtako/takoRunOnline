@@ -13,6 +13,9 @@ var meshes = [];
 
 var txtArr;
 
+var shakeAmount;
+var startShaking;
+var isShaking;
 var stopvar;
 var verticalVelocity = 0;
 var gravity = 1;
@@ -87,6 +90,10 @@ const KEY_RIGHT = 39;
 const KEY_SPACE = 32;
 
 window.onload = function () {
+    startShaking = false;
+    isShaking = false;
+   
+    
     window.addEventListener("keyup", keyUp);
     window.addEventListener("keydown", keyDown);
      window.addEventListener("mousemove", mouseMove);
@@ -154,7 +161,12 @@ window.onload = function () {
         8, 9, 10, 10, 11, 8,
         12, 13, 14, 14, 15, 12,
         16, 17, 18, 18, 19, 16,
-        20, 21, 22, 22, 23, 20]; camera = new Camera(); camera.setPerspectiveProjection(70.0, canvas.width / canvas.height, 0.001, 1000.0); camera.position = new Vector3(-5, 2, 0); camera.orientation = new Quaternion(0, 1, 0, 1); camera.updateView(0);
+        20, 21, 22, 22, 23, 20]; 
+        camera = new Camera(); 
+        camera.setPerspectiveProjection(70.0, canvas.width / canvas.height, 0.001, 1000.0); 
+        camera.position = new Vector3(100, 100, 100); 
+        camera.orientation = new Quaternion(0, 1, 0, 1); 
+        camera.updateView(0);
     initTexturedMeshRenderer();
     initSkyboxRenderer();
 
@@ -204,6 +216,17 @@ function checkIntersection(m1, m2) {
 }
 
 function updateFrame() {
+    if(startShaking = true){
+        if(shakeAmount > 0) {
+            isShaking = true;
+            shakeAmount--;
+        } else {
+            isShaking = false;
+            startShaking = false;
+        }
+    } else {
+        isShaking = false;
+    }
     difficulty = 0.5; 
     if(paused){
         
@@ -274,8 +297,12 @@ function updateFrame() {
     }
     fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
     
-    // camera.lookAt(Vector3.add(playerMesh.position, Vector3.sub(playerMesh.position,fishyMesh.position)),fishyMesh.position,new Vector3(0,1,0));
-    camera.lookAt(Vector3.add(playerMesh.position, new Vector3(-10, playerMesh.position.z*2 - fishyMesh.position.z,playerMesh.position.y*2 - fishyMesh.position.y )),playerMesh.position,new Vector3(0,1,0));
+     //camera.lookAt(Vector3.add(playerMesh.position, Vector3.sub(playerMesh.position,fishyMesh.position)),fishyMesh.position,new Vector3(0,1,0));
+    if(isShaking == false){camera.lookAt(Vector3.add(playerMesh.position, new Vector3(-10, playerMesh.position.z*2 - fishyMesh.position.z,playerMesh.position.y*2 - fishyMesh.position.y )),playerMesh.position,new Vector3(0,1,0));
+    } else {
+        camera.lookAt(Vector3.add(playerMesh.position, new Vector3(-10, Math.random() * (playerMesh.position.z*2 - fishyMesh.position.z),Math.random() * (playerMesh.position.y*2 - fishyMesh.position.y))),playerMesh.position,new Vector3(0,1,0));
+    }
+    
     console.log(camera.position)
     //camera.updateView(deltaTime);
     renderTexturedMeshes(meshes, camera, new Vector3(4, 4, 4));
@@ -356,6 +383,10 @@ function mouseUp(evt) {
     console.log("up");
 }
 var an = true;
+function shake(shakeAmount1) {
+ startShaking = true;
+ shakeAmount = shakeAmount1;
+}
 function keyDown(event) {
     switch (event.keyCode) {
         case KEY_SPACE:
