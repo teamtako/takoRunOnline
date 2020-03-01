@@ -33,6 +33,7 @@ var asteroids = [];
 var speeds = [];
 var rocketMesh;
 var rocketMeshes = [];
+var trashMeshes = [];
 
 var asteroid1;
 var asteroid2;
@@ -181,9 +182,9 @@ window.onload = function () {
     loadSkyboxFaceImage(SeaSkybox[4], 256, 256, "-y");
     loadSkyboxFaceImage(SeaSkybox[5], 256, 256, "+y");
 
-    asteroid1 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    trashMeshes = [createTexturedMesh(bottleData2[0],bottleData2[1]), createTexturedMesh(straw[0],straw[1]), createTexturedMesh(bag[0],bag[1])];
 
-    asteroids = [asteroid1];
+    asteroids = [trashMeshes[Math.floor(Math.random()*trashMeshes.length)]];
 
     speeds = [Math.random()*0.01];
   
@@ -228,8 +229,11 @@ function removeChar(){
     if(words[wordAt].length==1){
         wordAt++;
         score++;
+        for(var i = 0; i < asteroids.length; i++){
+            asteroids[i] = trashMeshes[Math.floor(Math.random()*trashMeshes.length)];
+            asteroids[i].position.x = 120;
+        }
         speeds[0] = 0.01;
-        asteroid1.position.x = 120;
         fishyMesh.position.z = (Math.random() - .5) * 16;
         fishyMesh.position.y = (Math.random() * 16)-10;
     }else{
@@ -330,6 +334,7 @@ function gameState(){
     if (fishyMesh.position.x <= -7) {
         score--;
         // fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
+        asteroids[i] = trashMeshes[Math.floor(Math.random()*trashMeshes.length)];
         fishyMesh.position.x = 120;
         fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
         fishyMesh.position.z = (Math.random() - .5) * 16;
@@ -380,8 +385,6 @@ function gameState(){
     }
     textCtx.font = "30px Arial";
     textCtx.fillText("Score: " + score, 100, 100);
-    
-    checkIntersection(fishyMesh, playerMesh);
     
     endTime = new Date().getTime();
     deltaTime = (endTime - startTime) / 1000.0;
