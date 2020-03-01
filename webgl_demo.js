@@ -297,14 +297,15 @@ function updateFrame() {
     }
     fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
     
-     //camera.lookAt(Vector3.add(playerMesh.position, Vector3.sub(playerMesh.position,fishyMesh.position)),fishyMesh.position,new Vector3(0,1,0));
-    if(isShaking == false){camera.lookAt(Vector3.add(playerMesh.position, new Vector3(-10, playerMesh.position.z*2 - fishyMesh.position.z,playerMesh.position.y*2 - fishyMesh.position.y )),playerMesh.position,new Vector3(0,1,0));
+     //camera.lookAt(Vector3.add(playerMesh.position, new Vector3(-10, playerMesh.position.z*2 - fishyMesh.position.z,playerMesh.position.y*2 - fishyMesh.position.y )),playerMesh.position,new Vector3(0,1,0));
+    if(isShaking == false){
+        camera.updateView(deltaTime);
     } else {
         camera.lookAt(Vector3.add(playerMesh.position, new Vector3(-10, Math.random() * (playerMesh.position.z*2 - fishyMesh.position.z),Math.random() * (playerMesh.position.y*2 - fishyMesh.position.y))),playerMesh.position,new Vector3(0,1,0));
     }
     
     console.log(camera.position)
-    //camera.updateView(deltaTime);
+    
     renderTexturedMeshes(meshes, camera, new Vector3(4, 4, 4));
     renderSkybox(camera.projectionMatrix, camera.orientation);
 
