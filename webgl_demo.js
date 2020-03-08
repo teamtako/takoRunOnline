@@ -290,10 +290,6 @@ function mouseUp(evt) {
     console.log("up");
 }
 
-function shakeCamera()
-{
-    camera.position = camera.position + new Vector3(Math.random()-.5,Math.random()-.5,0);
-}
 
 
 var an = true;
@@ -335,7 +331,6 @@ function gameState(){
     for(i = 0; i < asteroids.length; i++){
     var fishyMesh = asteroids[i];
     if (fishyMesh.position.x <= -7) {
-        shakeCamera();
         score--;
         // fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
         fishyMesh.position.x = 120;
@@ -441,8 +436,6 @@ function updateFrame() {
 }
 
 function keyUp(event) {
-    console.log(camera.position);
-    console.log(camera.orientation);
 
     switch (event.keyCode) {
         case KEY_S: {
