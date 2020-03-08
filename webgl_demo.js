@@ -346,6 +346,8 @@ function gameState(){
     var fishyMesh = asteroids[i];
     if (fishyMesh.position.x <= -7) {
         score--;
+        startShaking = true;
+        shakeAmount = 1000;
         // fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
         fishyMesh.position.x = 120;
         fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
@@ -357,14 +359,16 @@ function gameState(){
     }
 
     fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
-    }
-
-    
     if (isShaking == false) {
         camera.updateView(deltaTime);
+        camera.position = new Vector3(-5, 2, 0); camera.orientation = new Quaternion(0, 1, 0, 1); camera.updateView(0);
     } else {
         camera.lookAt(Vector3.add(playerMesh.position, new Vector3(-10, Math.random() * (playerMesh.position.z * 2 - fishyMesh.position.z), Math.random() * (playerMesh.position.y * 2 - fishyMesh.position.y))), playerMesh.position, new Vector3(0, 1, 0));
     }
+    }
+
+    
+   
     
     
     
