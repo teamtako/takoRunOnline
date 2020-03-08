@@ -360,7 +360,7 @@ function gameState(){
     }
 
     
-    if (isShaking == true) {
+    if (isShaking == false) {
         camera.updateView(deltaTime);
     } else {
         camera.lookAt(Vector3.add(playerMesh.position, new Vector3(-10, Math.random() * (playerMesh.position.z * 2 - fishyMesh.position.z), Math.random() * (playerMesh.position.y * 2 - fishyMesh.position.y))), playerMesh.position, new Vector3(0, 1, 0));
