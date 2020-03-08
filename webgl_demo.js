@@ -289,6 +289,13 @@ function mouseUp(evt) {
 
     console.log("up");
 }
+
+function shakeCamera()
+{
+    camera.position = camera.position + new Vector3(Math.random()-.5,Math.random()-.5,0);
+}
+
+
 var an = true;
 function keyDown(event) {
     switch (event.keyCode) {
@@ -328,6 +335,7 @@ function gameState(){
     for(i = 0; i < asteroids.length; i++){
     var fishyMesh = asteroids[i];
     if (fishyMesh.position.x <= -7) {
+        shakeCamera();
         score--;
         // fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
         fishyMesh.position.x = 120;
@@ -381,7 +389,7 @@ function gameState(){
     textCtx.font = "30px Arial";
     textCtx.fillText("Score: " + score, 100, 100);
     
-    checkIntersection(fishyMesh, playerMesh);
+
     
     endTime = new Date().getTime();
     deltaTime = (endTime - startTime) / 1000.0;
