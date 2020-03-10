@@ -26,6 +26,8 @@ var states = {
     PAUSE: 3
 }
 
+var menuItems=[];
+
 var currentState = states.TITLE;
 
 var playerMesh;
@@ -107,6 +109,7 @@ const KEY_SPACE = 32;
 var logo;
 
 window.onload = function () {
+    menuItems=["play","donate","credits"];
     startShaking = false;
     isShaking = false;
     logo = document.getElementById("logoImageID");
@@ -297,22 +300,43 @@ function mouseUp(evt) {
 
 var an = true;
 function keyDown(event) {
-    switch (event.keyCode) {
-        case KEY_SPACE:
-            if(currentState == states.TITLE){
-                currentState = states.GAME;
+    
+    
+             if(currentState == states.TITLE){
+                for(i=0;i<menuItems.length;i++){
+                if(event.keyCode==getKeyCode(menuItems[i].charAt(0))){
+                    console.log(i);
+                    if(menuItems[i].length==1){
+                        menuItems[i]="";
+                        switch (i) {
+                            case 0:
+                                currentState = states.GAME;
+                                for(i = 0; i < asteroids.length; i++){
+                                        asteroids[i].position.x = 120;
+                                            
+                                  }
+                                break;
+                            case 1:
+                                break;
+                            case 2:
+                                break;
+                            default:
+                                break;
+                          }
+                    }else{
+                        menuItems[i]=menuItems[i].substring(1, menuItems[i].length);
+                    }
+                    
+                   }
             }
-            for(i = 0; i < asteroids.length; i++){
-                asteroids[i].position.x = 120;
-                
+                 //currentState = states.GAME;
+            }else{
+                removeChar();
+                validType(event.keyCode);
             }
-            break;
-
-        default:
-           // removeChar();
-            validType(event.keyCode);
+        
             
-    }
+    
 
     
 
@@ -431,12 +455,38 @@ function gameOverState(){
 }
 
 function titleState(){
+    var sizeCalc=canvas.height/10;
     gl.clearColor(0.5, 0.7, 1.0, 1.0);
     textCtx.fillStyle = "white";
     textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
-    textCtx.drawImage(logo, (canvas.width-(canvas.width*0.5))/2, 0, canvas.width*0.5, (canvas.width*0.5)/2.2623771);
-    textCtx.font = "100px Arial";
-    textCtx.fillText("Press Space to Start Epic Game", 150, 200);
+    textCtx.drawImage(logo, (canvas.width-(canvas.width*0.5))/2, 10, canvas.width*0.5, (canvas.width*0.5)/2.2623771);
+    textCtx.font = sizeCalc+"px Arial";
+    // textCtx.fillText("Type:", 150, canvas.height/2.5);
+    // textCtx.fillText("Play", 150, canvas.height/2.5+sizeCalc+10);
+    // textCtx.fillText("Donate", 150, canvas.height/2.5+(sizeCalc+5)*2);
+    // textCtx.fillText("Credits", 150, canvas.height/2.5+(sizeCalc+3)*3);
+    typeReact("Type:", 150, canvas.height/2.5,0);
+    typeReact("Play", 150, canvas.height/2.5+sizeCalc+10,4-menuItems[0].length);
+    typeReact("Donate", 150, canvas.height/2.5+(sizeCalc+5)*2,6-menuItems[1].length);
+    typeReact("Credits", 150, canvas.height/2.5+(sizeCalc+3)*3,7-menuItems[2].length);
+}
+function typeReact(str, x, y, typed){
+    textCtx.font = canvas.height/10+"px Arial";
+    textCtx.fillStyle = "white";
+    for(var i = 0; i <= str.length; ++i){
+        if(i<typed){
+            var ch = str.charAt(i);
+            textCtx.fillStyle = "red";
+            textCtx.fillText(str.charAt(i), x, y);
+            x += textCtx.measureText(ch).width;
+        }else{
+            var ch = str.charAt(i);
+            textCtx.fillStyle = "white";
+            textCtx.fillText(str.charAt(i), x, y);
+            x += textCtx.measureText(ch).width;
+        }
+        
+    }
 }
 
 function pauseState(){
