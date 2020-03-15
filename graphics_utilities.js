@@ -508,6 +508,17 @@ class Matrix4 {
         }
     }
 
+    toQuaternion(){
+        let q = new Quaternion();
+
+        q.w = Math.sqrt(1 + this.m[0] + this.m[5] + this.m[10]) / 2;
+        q.x = (this.m[6] - this.m[9]) / ( 4 * q.w)
+        q.y = (this.m[89] - this.m[2]) / ( 4 * q.w)
+        q.z = (this.m[1] - this.m[4]) / ( 4 * q.w)
+
+        return q;
+    }
+
     setIdentity(){
         for(let i = 0; i < 16; i++){
             if(i % 5 != 0){
@@ -695,6 +706,7 @@ class Camera {
         this.viewMatrix.getUpVector(this.up);
         this.viewMatrix.getRightVector(this.right);
         this.viewMatrix = Matrix4.multiply(this.projectionMatrix, this.viewMatrix);
+        this.orientation = this.viewMatrix.toQuaternion();
     }
 }
 
