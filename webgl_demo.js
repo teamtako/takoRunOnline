@@ -286,12 +286,9 @@ function mouseDown(evt) {
         rocketMeshes.push(new TexturedMesh(rocketMesh));
         rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
         rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,0),1);
-    console.log("down");
 }
 function mouseUp(evt) {
     speed = 0.1;
-
-    console.log("up");
 }
 var an = true;
 function keyDown(event) {
@@ -339,7 +336,6 @@ function gameState(){
         fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
         fishyMesh.position.z = (Math.random() - .5) * 16;
         fishyMesh.position.y = (Math.random() * 16)-10;
-        console.log("" + fishyMesh.position.y);
     } else {
         fishyMesh.position.x -= 0.1 + ((score-5)/100);
     }
@@ -367,7 +363,6 @@ function gameState(){
         }                
     }
 
-    // console.log(closestTrash.position.z + " " + closestTrash.position.y);
     textCtx.fillStyle = "#000000";
     textCtx.fillRect(window.innerWidth/2-10-(getWord().length*10), 30, getWord().length*21, 50);
     textCtx.strokeStyle = "#ffffff";
@@ -435,17 +430,13 @@ function updateFrame() {
 }
 
 function keyUp(event) {
-    console.log(camera.position);
-    console.log(camera.orientation);
 
     switch (event.keyCode) {
         case KEY_S: {
-            console.log("press works");
             if (currentState == states.GAME_OVER) {
                 score = 5;
                 currentState = states.TITLE;
             }
-            console.log("respawned")
         }
 
     }
