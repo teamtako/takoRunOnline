@@ -255,9 +255,10 @@ function validType(code){
 
 //get next word for the astriod when it spawns
 function getWord(){
-var word=words[wordAt];
-return word.toString();
+    var word=words[wordAt];
+    return word.toString();
 }
+
 function getKeyCode(char) {
     var keyCode = char.charCodeAt(0);
     if(keyCode > 90) {  // 90 is keyCode for 'z'
