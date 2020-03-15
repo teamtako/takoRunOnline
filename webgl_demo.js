@@ -1,11 +1,11 @@
 //type stuff
 var lvl1 = "beluga whale populations are exposed to a variety of stressors and threats including pollution heavy metals chemicals trash shipping energy exploration commercial fishing extreme weather events strandings subsistence harvesting and other types of human disturbance such as underwater noise The Cook Inlet population faces additional threats because of its proximity to the most densely populated area of Alaska during the summer season";
 var activeWords = []; //all words(objects with words accosited to them) that are on the screen at any given time
-var activeWord=""; //The word that you are currently typing
-var wordDone=true; //if the current word is typed and a new one needs to be chosen
-var words=[];
-var wordAt=0;
-var color="green";
+var activeWord = ""; //The word that you are currently typing
+var wordDone = true; //if the current word is typed and a new one needs to be chosen
+var words = [];
+var wordAt = 0;
+var color = "green";
 //type stuff
 
 
@@ -43,6 +43,11 @@ var asteroid3;
 var asteroid4;
 var asteroid5;
 var asteroid6;
+
+
+var shakeAmount;
+var startShaking;
+var isShaking;
 
 var stopvar;
 var verticalVelocity = 0;
@@ -109,10 +114,12 @@ const KEY_SPACE = 32;
 var logo;
 
 window.onload = function () {
+
     menuItems=["play","donate","credits"];
     startShaking = false;
     isShaking = false;
     logo = document.getElementById("logoImageID");
+
 
     window.addEventListener("keyup", keyUp);
     window.addEventListener("keydown", keyDown);
@@ -137,6 +144,7 @@ window.onload = function () {
     gl.enable(gl.CULL_FACE);
     gl.clearColor(0.5, 0.7, 1.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
+
     handleType();
     let vertices = [
         -0.5, -0.5, 0.5, 0, 0, 1, 0.0, 1.0,
@@ -169,13 +177,19 @@ window.onload = function () {
         0.5, -0.5, 0.5, 0, -1, 0, 1.0, 0.0,
         0.5, -0.5, -0.5, 0, -1, 0, 1.0, 1.0,
     ];
+
     indices = [
         0, 1, 2, 2, 3, 0,
         4, 5, 6, 6, 7, 4,
         8, 9, 10, 10, 11, 8,
         12, 13, 14, 14, 15, 12,
         16, 17, 18, 18, 19, 16,
-        20, 21, 22, 22, 23, 20]; camera = new Camera(); camera.setPerspectiveProjection(70.0, canvas.width / canvas.height, 0.001, 1000.0); camera.position = new Vector3(-5, 2, 0); camera.orientation = new Quaternion(0, 1, 0, 1); camera.updateView(0);
+        20, 21, 22, 22, 23, 20];
+    camera = new Camera();
+    camera.setPerspectiveProjection(70.0, canvas.width / canvas.height, 0.001, 1000.0);
+    camera.position = new Vector3(100, 100, 100);
+    camera.orientation = new Quaternion(0, 1, 0, 1);
+    camera.updateView(0);
     initTexturedMeshRenderer();
     initSkyboxRenderer();
 
@@ -187,26 +201,28 @@ window.onload = function () {
     loadSkyboxFaceImage(SeaSkybox[4], 256, 256, "-y");
     loadSkyboxFaceImage(SeaSkybox[5], 256, 256, "+y");
 
+
     asteroid1 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
 
     asteroids = [asteroid1];
 
     speeds = [Math.random()*0.01];
   
+
     rocketMesh = createTexturedMesh(rocketData[0], rocketData[1]);
     rocketMesh.scale.scale(1);
-    rocketMesh.orientation.rotate(new Vector3(-1 ,0,0), -Math.PI);
-    
+    rocketMesh.orientation.rotate(new Vector3(-1, 0, 0), -Math.PI);
 
-    for(i = 0; i < asteroids.length; i++){
+
+    for (i = 0; i < asteroids.length; i++) {
         var fishyMesh = asteroids[i];
         // fishyMesh.textureID = generateGLTexture2D(monkeyPixels, 1024, 1024);
-        fishyMesh.scale = new Vector3(0.7,0.7,0.7);
+        fishyMesh.scale = new Vector3(0.7, 0.7, 0.7);
         fishyMesh.orientation.rotate(new Vector3(0, 1, 0), -Math.PI);
         fishyMesh.position.y = 2;
         fishyMesh.position.x -= (.1);
-    }   
-    
+    }
+
     // let verts = [];
     // let inds = [];
     // generateUnitCubeVerticesIndexedWithNormalsTexCoords(verts, inds); // generates unit cube vertices that is indexed with normal texture coordinates
@@ -242,6 +258,7 @@ function removeChar(){
         words[wordAt]= words[wordAt].substring(1, words[wordAt].length);;
     }
 }
+
 //when a key is typed checks if it is the correct next letter and if there is no word selected pickes a word with the correct first char
 function validType(code){
     if(code==getKeyCode(words[wordAt].charAt(0))){
@@ -251,6 +268,44 @@ function validType(code){
         wordDone=false;
        }else{
         color="red";
+
+
+function updateFrame() {
+    if (startShaking == true) {
+        if (shakeAmount > 0) {
+            isShaking = true;
+            shakeAmount--;
+        } else {
+            isShaking = false;
+            startShaking = false;
+        }
+    } else {
+        isShaking = false;
+    }
+    difficulty = 0.5;
+
+
+    textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
+
+    textCtx.font = "100px Arial";
+    textCtx.fillStyle = "white";
+    textCtx.fillText("Paused", textCanvas.width / 2, textCanvas.height / 2);
+
+    textCtx.font = "50px Arial";
+    textCtx.fillText("resume", textCanvas.width / 2, textCanvas.height / 2 + 50);
+    textCtx.fillText("Donate", textCanvas.width / 2, textCanvas.height / 2 + 100);
+    textCtx.fillText("Siko Mode", textCanvas.width / 2, textCanvas.height / 2 + 150);
+
+    //document.getElementByTagName("*").cursor = "auto";
+
+
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.clear(gl.DEPTH_BUFFER_BIT);
+    if (playerMesh.position.z > destZ) {  //playerMesh is missile mesh
+        playerMesh.position.z -= mvmtSpeed;
+    } else if (playerMesh.position.z < destZ) {
+        playerMesh.position.z += mvmtSpeed;
+
     }
 }
 
@@ -356,15 +411,15 @@ function gameState(){
     }
     distIntoArray = 0;
     rocketMeshes.forEach(element => {
-        element.position.add(new Vector3(20 * deltaTime * ((element.orientation.x) / Math.PI),20 * deltaTime * ((element.orientation.y) / Math.PI),20 * deltaTime * ((element.orientation.z) / Math.PI)));
-       
-       if (element.position.x > 60)
-        {
-          rocketMeshes.splice(distIntoArray,1);
-          element = null;
+        element.position.add(new Vector3(20 * deltaTime * ((element.orientation.x) / Math.PI), 20 * deltaTime * ((element.orientation.y) / Math.PI), 20 * deltaTime * ((element.orientation.z) / Math.PI)));
+
+        if (element.position.x > 60) {
+            rocketMeshes.splice(distIntoArray, 1);
+            element = null;
         }
         distIntoArray++;
-      });
+    });
+
 
     for(i = 0; i < asteroids.length; i++){
     var fishyMesh = asteroids[i];
@@ -454,6 +509,7 @@ function gameOverState(){
     score = 5;
 }
 
+
 function titleState(){
     var sizeCalc=canvas.height/10;
     gl.clearColor(0.5, 0.7, 1.0, 1.0);
@@ -470,6 +526,7 @@ function titleState(){
     typeReact("Donate", 150, canvas.height/2.5+(sizeCalc+5)*2,6-menuItems[1].length);
     typeReact("Credits", 150, canvas.height/2.5+(sizeCalc+3)*3,7-menuItems[2].length);
 }
+
 function typeReact(str, x, y, typed){
     textCtx.font = canvas.height/10+"px Arial";
     textCtx.fillStyle = "white";
@@ -491,6 +548,34 @@ function typeReact(str, x, y, typed){
 
 function pauseState(){
 
+function removeChar() {
+    if (words[wordAt].length == 1) {
+        wordAt++;
+    } else {
+        words[wordAt] = words[wordAt].substring(1, words[wordAt].length);;
+    }
+}
+//when a key is typed checks if it is the correct next letter and if there is no word selected pickes a word with the correct first char
+function validType(code) {
+    if (wordDone) {
+        for (i = 0; i < activeWords.length; i++) {
+            if (code == getKeyCode(activeWords[i].charAt(0))) {
+                activeWords[i] = activeWord;
+                wordDone = false;
+            } else {
+
+            }
+        }
+    } else { }
+    if (code == getKeyCode(words[wordAt].charAt(0))) {
+        color = "white";
+        removeChar();
+        activeWords[i] = activeWord;
+        wordDone = false;
+    } else {
+        color = "red";
+    }
+
 }
 
 function updateFrame() {
@@ -511,11 +596,28 @@ function updateFrame() {
         pauseState();
     }
 
+
 }
 function shake(shakeAmount1) {
     startShaking = true;
     shakeAmount = shakeAmount1;
 }
+
+
+//get next word for the astriod when it spawns
+function getWord() {
+    var word = words[wordAt];
+    return word;
+}
+function getKeyCode(char) {
+    var keyCode = char.charCodeAt(0);
+    if (keyCode > 90) {  // 90 is keyCode for 'z'
+        return keyCode - 32;
+    }
+    return keyCode;
+}
+
+//end type
 
 function keyUp(event) {
 
