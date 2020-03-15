@@ -342,7 +342,8 @@ function updateFrame() {
 
         //camera.lookAt(Vector3.add(playerMesh.position, new Vector3(-10, playerMesh.position.z*2 - fishyMesh.position.z,playerMesh.position.y*2 - fishyMesh.position.y )),playerMesh.position,new Vector3(0,1,0));
         if (isShaking == false) {
-            camera.lookAt(playerMesh.position, new Vector3(100,100,100),  new Vector3(0, 1, 0));
+            camera.updateView(deltaTime);
+            camera.position = new Vector3(-5, 2, 0); camera.orientation = new Quaternion(0, 1, 0, 1); camera.updateView(0);
             //camera.updateView(deltaTime);
         } else {
             camera.lookAt(Vector3.add(playerMesh.position, new Vector3(-10, Math.random() * (playerMesh.position.z * 2 - fishyMesh.position.z), Math.random() * (playerMesh.position.y * 2 - fishyMesh.position.y))), playerMesh.position, new Vector3(0, 1, 0));
