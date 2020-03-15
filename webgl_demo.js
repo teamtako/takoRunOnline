@@ -354,12 +354,10 @@ function gameState(){
     renderSkybox(camera.projectionMatrix, camera.orientation);
 
     textCtx.font = "30px Arial";
-    textCtx.fillStyle = "white";
     
     textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
 
     textCtx.fillStyle = color;
-    textCtx.font = "30px Arial";
     
     var closestTrash = asteroids[0];
 
@@ -399,6 +397,7 @@ function gameOverState(){
     textCtx.font = "100px Arial";
     textCtx.fillText("You're Dead! Press S to restart", 170, 200);
     clearInterval(stopvar);
+    menuItems=["play","donate","credits"];
     score = 5;
 }
 
