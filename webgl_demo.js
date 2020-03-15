@@ -277,7 +277,7 @@ function mouseMove(evt) {
     destY = (((mouseY / canvas.height) * -8) + 6);
 }
 function mouseDown(evt) {
-    rocketMeshes.push(new TexturedMesh(rocketMesh));
+   /* rocketMeshes.push(new TexturedMesh(rocketMesh));
         rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
         rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,-.1),1);
 
@@ -287,7 +287,7 @@ function mouseDown(evt) {
 
         rocketMeshes.push(new TexturedMesh(rocketMesh));
         rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
-        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,0),1);
+        rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,0),1); */
     console.log("down");
 }
 function mouseUp(evt) {
