@@ -62,6 +62,11 @@ var speed = 0.1;
 var destZ = 0;
 var destY = 0;
 
+var octopus;
+var animatedMeshes = [];
+var bubbleEmitter;
+var particleEmitters = [];
+
 const KEY_0 = 48;
 const KEY_1 = 49;
 const KEY_2 = 50;
@@ -131,6 +136,8 @@ window.onload = function () {
     gl.enable(gl.CULL_FACE);
     gl.clearColor(0.5, 0.7, 1.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     handleType();
     let vertices = [
         -0.5, -0.5, 0.5, 0, 0, 1, 0.0, 1.0,
@@ -169,7 +176,17 @@ window.onload = function () {
         8, 9, 10, 10, 11, 8,
         12, 13, 14, 14, 15, 12,
         16, 17, 18, 18, 19, 16,
-        20, 21, 22, 22, 23, 20]; camera = new Camera(); camera.setPerspectiveProjection(70.0, canvas.width / canvas.height, 0.001, 1000.0); camera.position = new Vector3(-5, 2, 0); camera.orientation = new Quaternion(0, 1, 0, 1); camera.updateView(0);
+        20, 21, 22, 22, 23, 20
+    ]; 
+    
+    camera = new Camera(); 
+    camera.setPerspectiveProjection(70.0, canvas.width / canvas.height, 0.001, 1000.0); 
+    camera.position = new Vector3(-5, 2, 0); 
+    camera.orientation = new Quaternion(0, 1, 0, 1); 
+    camera.updateView(0);
+    
+    initAnimatedTexturedMeshRenderer();
+    initParticleRenderer();
     initTexturedMeshRenderer();
     initSkyboxRenderer();
 
@@ -207,8 +224,51 @@ window.onload = function () {
     //this.playerMesh = createTexturedMesh(verts, inds);
     playerMesh = createTexturedMesh(missileData[0], missileData[1]);
     playerMesh.orientation.rotate(new Vector3(0, 1, 0), -Math.PI);
-    meshes = [playerMesh];
+    //meshes = [playerMesh];
 
+    /*********************ANIMATED OCTOPUS***********************************/
+    octopus = createAnimatedTexturedMesh(octopusMeshData[0], octopusMeshData[1]);
+    octopus.textureID = generateGLTexture2D(octopusTextureData, 1024, 1024, "linear");
+    octopus.animations["idle"] = buildAnimation(octopusAnimation["idle"]);
+    octopus.currentAnimation = octopus.animations["idle"];
+    octopus.orientation.rotate(new Vector3(0, 0, 1), Math.PI);
+    octopus.orientation.rotate(new Vector3(0, 1, 0), Math.PI);
+    octopus.position = new Vector3(14, -5, 0);
+    animatedMeshes = [octopus];
+    /*********************----ANIMATED OCTOPUS----***********************************/
+
+    /*********************PARTICLES***********************************/
+    bubbleEmitter = new ParticleEmitter();
+    bubbleEmitter.repeat = true;
+    for(let i = 0; i < 8; i++){
+        bubbleEmitter.positions.push(new Vector3(octopus.position.x, octopus.position.y, octopus.position.z));
+        let sc = Math.random() * 0.5;
+        bubbleEmitter.scales.push(new Vector3(sc, sc, sc));
+        bubbleEmitter.orientations.push(new Quaternion());
+        bubbleEmitter.velocities.push(new Vector3(0, 1, 0));
+        bubbleEmitter.durations.push(20);
+        bubbleEmitter.startDelays.push(Math.random() + (i * 3));
+    }
+    bubbleEmitter.updateFunction = function(pEmtr, deltaTime){
+        for(let i = 0; i < pEmtr.positions.length; i++){
+            if(pEmtr.totalTime > pEmtr.startDelays[i]){
+                pEmtr.positions[i].add(Vector3.scale(pEmtr.velocities[i], deltaTime));
+                pEmtr.positions[i].z += Math.sin(pEmtr.totalTime + pEmtr.startDelays[i]) * deltaTime;
+                pEmtr.durations[i] -= deltaTime;
+                pEmtr.scales[i].add(Vector3.scale(new Vector3(deltaTime, deltaTime, deltaTime), 0.05));
+                if(pEmtr.durations[i] <= 0){
+                    pEmtr.positions[i].x = octopus.position.x;
+                    pEmtr.positions[i].y = octopus.position.y;
+                    pEmtr.positions[i].z = octopus.position.z;
+                    pEmtr.durations[i] = 20;
+                }
+            }
+        }
+    };
+
+    bubbleEmitter.textureID = generateGLTexture2D(bubbleTexture, 64, 64, "linear");
+    particleEmitters.push(bubbleEmitter);
+    /*********************----PARTICLES----***********************************/
     startTime = new Date().getTime();
 
     setInterval(updateFrame, 1);
@@ -307,9 +367,6 @@ function keyDown(event) {
             validType(event.keyCode);
             
     }
-
-    
-
 }
 
 function gameState(){
@@ -343,10 +400,15 @@ function gameState(){
     }
 
     camera.updateView(deltaTime);
-    renderTexturedMeshes(meshes, camera, new Vector3(4, 4, 4));
-    renderTexturedMeshes(asteroids, camera, new Vector3(4, 4, 4));
-    renderTexturedMeshes(rocketMeshes, camera, new Vector3(4, 4, 4));
+    let lightPos = new Vector3(4, 4, 4);
     renderSkybox(camera.projectionMatrix, camera.orientation);
+    renderTexturedMeshes(meshes, camera, lightPos);
+    renderTexturedMeshes(asteroids, camera, lightPos);
+    renderTexturedMeshes(rocketMeshes, camera, lightPos);
+    renderAnimatedTexturedMeshes(animatedMeshes, camera, lightPos, deltaTime);
+    updateParticles(particleEmitters, deltaTime);
+    renderParticles(particleEmitters, camera, deltaTime);
+    
 
     textCtx.font = "30px Arial";
     textCtx.fillStyle = "white";
@@ -381,7 +443,7 @@ function gameState(){
     textCtx.font = "30px Arial";
     textCtx.fillText("Score: " + score, 100, 100);
     
-    checkIntersection(fishyMesh, playerMesh);
+    //checkIntersection(fishyMesh, playerMesh);
     
     endTime = new Date().getTime();
     deltaTime = (endTime - startTime) / 1000.0;
