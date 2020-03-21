@@ -260,6 +260,10 @@ window.onload = function () {
                     pEmtr.positions[i].x = octopus.position.x;
                     pEmtr.positions[i].y = octopus.position.y;
                     pEmtr.positions[i].z = octopus.position.z;
+                    let sc = Math.random() * 0.5;
+                    bubbleEmitter.scales[i].x = sc;
+                    bubbleEmitter.scales[i].y = sc;
+                    bubbleEmitter.scales[i].z = sc;
                     pEmtr.durations[i] = 20;
                 }
             }
