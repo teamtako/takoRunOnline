@@ -113,7 +113,7 @@ var logo;
 window.onload = function () {
     logo = document.getElementById("logoImageID");
 
-    window.addEventListener("keyup", keyUp);
+    window.addEventListener("keyup", keyUp); 
     window.addEventListener("keydown", keyDown);
     window.addEventListener("mousemove", mouseMove);
     window.addEventListener("mousedown", mouseDown);
