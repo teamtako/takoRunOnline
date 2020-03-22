@@ -9,7 +9,8 @@ var color="green";
 //type stuff
 
 
-
+var startShaking;
+var isShaking;
 var canvas;
 var textCanvas;
 var textCtx;
@@ -112,6 +113,8 @@ const KEY_SPACE = 32;
 var logo;
 
 window.onload = function () {
+    startShaking = false;
+    isShaking = false;
     logo = document.getElementById("logoImageID");
 
     window.addEventListener("keyup", keyUp); 
@@ -376,6 +379,17 @@ function keyDown(event) {
 }
 
 function gameState(){
+    if (startShaking == true) {
+        if (shakeAmount > 0) {
+            isShaking = true;
+            shakeAmount--;
+        } else {
+            isShaking = false;
+            startShaking = false;
+        }
+    } else {
+        isShaking = false;
+    }
     distIntoArray = 0;
     rocketMeshes.forEach(element => {
         element.position.add(new Vector3(20 * deltaTime * ((element.orientation.x) / Math.PI),20 * deltaTime * ((element.orientation.y) / Math.PI),20 * deltaTime * ((element.orientation.z) / Math.PI)));
@@ -405,7 +419,13 @@ function gameState(){
     fishyMesh.orientation.rotate(new Vector3(0, 0, 1), 1 * deltaTime);
     }
 
-    camera.updateView(deltaTime);
+    if (isShaking == false) {
+        camera.updateView(deltaTime);
+        camera.position = new Vector3(-5, 2, 0); camera.orientation = new Quaternion(0, 1, 0, 1); camera.updateView(0);
+    } else {
+        camera.lookAt(Vector3.add(playerMesh.position, new Vector3(-10, Math.random() * (playerMesh.position.z * 2 - fishyMesh.position.z), Math.random() * (playerMesh.position.y * 2 - fishyMesh.position.y))), playerMesh.position, new Vector3(0, 1, 0));
+    }
+    
     let lightPos = new Vector3(4, 4, 4);
     renderSkybox(camera.projectionMatrix, camera.orientation);
     renderTexturedMeshes(meshes, camera, lightPos);
@@ -464,7 +484,10 @@ function gameOverState(){
     menuItems=["play","donate","credits"];
     score = 5;
 }
-
+function shake(shakeAmount1) {
+    startShaking = true;
+    shakeAmount = shakeAmount1;
+}
 function titleState(){
     gl.clearColor(0.5, 0.7, 1.0, 1.0);
     textCtx.fillStyle = "white";
