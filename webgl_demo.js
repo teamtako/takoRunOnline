@@ -33,6 +33,7 @@ var asteroids = [];
 var speeds = [];
 var rocketMesh;
 var rocketMeshes = [];
+var trashMeshes = [];
 
 var asteroid1;
 var asteroid2;
@@ -198,9 +199,9 @@ window.onload = function () {
     loadSkyboxFaceImage(SeaSkybox[4], 256, 256, "-y");
     loadSkyboxFaceImage(SeaSkybox[5], 256, 256, "+y");
 
-    asteroid1 =  createTexturedMesh(bottleData2[0],bottleData2[1]);
+    trashMeshes = [createTexturedMesh(bottleData2[0],bottleData2[1]), createTexturedMesh(straw[0],straw[1]), createTexturedMesh(bag[0],bag[1])];
 
-    asteroids = [asteroid1];
+    asteroids = [trashMeshes[Math.floor(Math.random()*trashMeshes.length)]];
 
     speeds = [Math.random()*0.01];
   
@@ -292,8 +293,11 @@ function removeChar(){
     if(words[wordAt].length==1){
         wordAt++;
         score++;
+        for(var i = 0; i < asteroids.length; i++){
+            asteroids[i] = trashMeshes[Math.floor(Math.random()*trashMeshes.length)];
+            asteroids[i].position.x = 120;
+        }
         speeds[0] = 0.01;
-        asteroid1.position.x = 120;
         fishyMesh.position.z = (Math.random() - .5) * 16;
         fishyMesh.position.y = (Math.random() * 16)-10;
     }else{
@@ -315,9 +319,10 @@ function validType(code){
 
 //get next word for the astriod when it spawns
 function getWord(){
-var word=words[wordAt];
-return word.toString();
+    var word=words[wordAt];
+    return word.toString();
 }
+
 function getKeyCode(char) {
     var keyCode = char.charCodeAt(0);
     if(keyCode > 90) {  // 90 is keyCode for 'z'
@@ -346,12 +351,9 @@ function mouseDown(evt) {
         rocketMeshes.push(new TexturedMesh(rocketMesh));
         rocketMeshes[rocketMeshes.length - 1].position = new Vector3(playerMesh.position.x,playerMesh.position.y,playerMesh.position.z);
         rocketMeshes[rocketMeshes.length - 1].orientation = Quaternion.rotationToQuaternion(new Vector3(1,0,0),1);
-    console.log("down");
 }
 function mouseUp(evt) {
     speed = 0.1;
-
-    console.log("up");
 }
 var an = true;
 function keyDown(event) {
@@ -391,11 +393,11 @@ function gameState(){
     if (fishyMesh.position.x <= -7) {
         score--;
         // fishyMesh.scale = new Vector3(Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1),Math.floor((Math.random()*2)+1));
+        asteroids[i] = trashMeshes[Math.floor(Math.random()*trashMeshes.length)];
         fishyMesh.position.x = 120;
         fishyMesh.orientation.rotate(new Vector3(Math.random() * 360, Math.random() * 360, Math.random() * 360), 1 * deltaTime);
         fishyMesh.position.z = (Math.random() - .5) * 16;
         fishyMesh.position.y = (Math.random() * 16)-10;
-        console.log("" + fishyMesh.position.y);
     } else {
         fishyMesh.position.x -= 0.1 + ((score-5)/100);
     }
@@ -415,12 +417,10 @@ function gameState(){
     
 
     textCtx.font = "30px Arial";
-    textCtx.fillStyle = "white";
     
     textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
 
     textCtx.fillStyle = color;
-    textCtx.font = "30px Arial";
     
     var closestTrash = asteroids[0];
 
@@ -430,7 +430,6 @@ function gameState(){
         }                
     }
 
-    // console.log(closestTrash.position.z + " " + closestTrash.position.y);
     textCtx.fillStyle = "#000000";
     textCtx.fillRect(window.innerWidth/2-10-(getWord().length*10), 30, getWord().length*21, 50);
     textCtx.strokeStyle = "#ffffff";
@@ -448,7 +447,7 @@ function gameState(){
     textCtx.fillText("Score: " + score, 100, 100);
     
     //checkIntersection(fishyMesh, playerMesh);
-    
+
     endTime = new Date().getTime();
     deltaTime = (endTime - startTime) / 1000.0;
     startTime = endTime;
@@ -462,6 +461,7 @@ function gameOverState(){
     textCtx.font = "100px Arial";
     textCtx.fillText("You're Dead! Press S to restart", 170, 200);
     clearInterval(stopvar);
+    menuItems=["play","donate","credits"];
     score = 5;
 }
 
@@ -499,17 +499,13 @@ function updateFrame() {
 }
 
 function keyUp(event) {
-    console.log(camera.position);
-    console.log(camera.orientation);
 
     switch (event.keyCode) {
         case KEY_S: {
-            console.log("press works");
             if (currentState == states.GAME_OVER) {
                 score = 5;
                 currentState = states.TITLE;
             }
-            console.log("respawned")
         }
 
     }
