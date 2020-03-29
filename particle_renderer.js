@@ -48,7 +48,7 @@ function initParticleRenderer(){
                                        cameraUp * position.y * (particleSize.y);\n\
         uv = uvCoordinate;\n\
         norm = normal;\n\
-        gl_Position = cameraViewMatrix * vec4(newPos, 1.0);\n\
+        gl_Position = cameraViewMatrix * vec4(newPos.xy, newPos.z, 1.0);\n\
     }";
 
     let paFragShader = "#version 300 es\n\
