@@ -1,5 +1,6 @@
 //type stuff
 var lvl1 = "beluga whale populations are exposed to a variety of stressors and threats including pollution heavy metals chemicals trash shipping energy exploration commercial fishing extreme weather events strandings subsistence harvesting and other types of human disturbance such as underwater noise The Cook Inlet population faces additional threats because of its proximity to the most densely populated area of Alaska during the summer season";
+var spacesInList = 1;
 var activeWords = []; //all words(objects with words accosited to them) that are on the screen at any given time
 var activeWord=""; //The word that you are currently typing
 var wordDone=true; //if the current word is typed and a new one needs to be chosen
@@ -221,6 +222,19 @@ window.onload = function () {
         fishyMesh.position.y = 2;
         fishyMesh.position.x -= (.1);
     }   
+
+    //Get # of words in word list
+    var i = 0, strLength = lvl1.length;
+    for(i; i < strLength; i++) {
+        if(lvl1.charAt(i) == ' ')
+        {
+            spacesInList++;
+        }
+    }
+    console.log(spacesInList);
+
+
+
     
     // let verts = [];
     // let inds = [];
@@ -294,8 +308,9 @@ function handleType(){
 }
 function removeChar(){
     if(words[wordAt].length==1){
-        wordAt = Math.floor(Math.random() * 62);
       
+        wordAt = Math.floor(Math.random() * spacesInList);
+          
         score++;
         for(var i = 0; i < asteroids.length; i++){
             asteroids[i] = trashMeshes[Math.floor(Math.random()*trashMeshes.length)];
