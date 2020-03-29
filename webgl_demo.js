@@ -294,7 +294,8 @@ function handleType(){
 }
 function removeChar(){
     if(words[wordAt].length==1){
-        wordAt++;
+        wordAt = Math.floor(Math.random() * 62);
+      
         score++;
         for(var i = 0; i < asteroids.length; i++){
             asteroids[i] = trashMeshes[Math.floor(Math.random()*trashMeshes.length)];
