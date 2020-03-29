@@ -232,7 +232,7 @@ window.onload = function () {
 
     /*********************ANIMATED OCTOPUS***********************************/
     octopus = createAnimatedTexturedMesh(octopusMeshData[0], octopusMeshData[1]);
-    octopus.textureID = generateGLTexture2D(octopusTextureData, 1024, 1024, "linear");
+    octopus.textureID = generateGLTexture2D(octopusFlesh, 1024, 1024, "linear");
     octopus.animations["idle"] = buildAnimation(octopusAnimation["idle"]);
     octopus.currentAnimation = octopus.animations["idle"];
     octopus.orientation.rotate(new Vector3(0, 0, 1), Math.PI);
